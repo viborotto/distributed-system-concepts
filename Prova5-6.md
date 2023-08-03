@@ -186,3 +186,166 @@ Ao inves de retornar e acumular as referencias ate achar totalmente as informaco
 - Server0 espera pelo resultado de Server1 e devolve para o cliente
 
 *DNS: Problema de Escalabilidade*
+
+_Escalabilidade de tamanho_: Devemos garantir que os servidores possam lidar com um grande numero de requisicoes por unidade de tempo. Servidores alto nivel podem estar com problemas serios.
+`Solucao`: Assuma (pelo menos nos níveis global e de administração) que os conteúdos dos nós mudam muito pouco. Assim podemos aplicar replicação extensivamente, mapeando nós a múltiplos servidores e começar a resolução de nomes no servidor mais próximo.
+_OBS_: Um atributo importante em muitos nodes é o endereco(onde a entidade pode ser localizada). Replicacao faz com que servidores de nomes em larga escala sejam inadequados para localizar entidades moveis.
+
+_Escalabilidade Geografica_: Precisamos garantir que a resolucao de nomes escale mesmo em grandes distancias geograficas. Provavelmente seria bom utilizar a resolucao recursiva nesse caso por estar no mesmo dominio, proximos geograficamente.
+- Porém:
+Ao mapear nós em servidores que podem ser localizados em qualquer lugar, nós acabamos introduzindo uma dependência de localização implícita. Pode nao ser tao trivial saber a localizacao para tratar isso.
+
+
+#### Nomeacao baseada em atributos
+
+Em muitos casos, é mais conveniente nomear e procurar entidades pelos atributos => servicos tradicionais de diretorios(ex: paginas amarelas)
+- Problema: Operações de consulta globais podem ser muito caras(nao poderia ser feito, muito custoso), já que necessitam que os valores dos atributos procurados correspondam aos valores reais das entidades. Em princípio, teríamos que inspecionar todas as entidades.
+`Solucao`: Implementar serviços de diretórios básicos locais (tais como bancos de
+dados) e combiná-los com os sistemas de nomes estruturados tradicionais.
+
+
+*Implementando um servico de diretorio*
+Solucao para uma busca escalavel: Implementar um servico com diversos bancos de dados locais, combinando-o com o DNS
+
+*LDAP -  Uma das implementacoes*
+Cada entrada do diretório consiste em um par (atributo, valor), unicamente nomeado para facilitar as buscas. Organizados de forma hierarquica
+
+## Capitulo 6
+
+### Conceitos - Coordenacao
+* [Exclusao mutua]()
+  * [Permissao]
+    * [Centralizado]
+    * [distribuido] 
+  * [token]
+  * [decentralizado]
+* [Eleicao]()
+  * Anel
+  * Bully
+
+Problemas que devem ser tratados em sistemas distribuidos
+### Exclusao mutua
+Varios dispositivos que precisam acessar um recurso, mas somente um pode acessar.
+`Problema`: Alguns processos em um sistema distribuido querem acesso exclusivo a algum recurso
+
+_Solucoes_
+- *Baseado em permissao*: um processo que quiser entrar na secao critica(ou acessar um recurso) precisa da permissao de outros processos
+
+1. *Permissao: Centralizado*
+Node responsavel por dar a permissao: _coordenador_
+  - Processo P1 pede permissao ao coordenador para acessar o recurso compartilhado. Verificara na fila em sua memoria para verificar se alguem ja pediu, fila vazia -> permissao concedida
+  - Processo P2 tambem quer acessar o recurso, coordenador sabe que P1 ja pediu -> recurso ja emprestado -> o coordenador nao responde, e coloca em sua fila quem pediu e nao deu(P2)
+  - Quando P1 libera o recurso, avisa o coordenador, e o coordenador finalmente responde para P2 -> permissao concedida
+  - _Possiveis problemas:_ Poderia acontecer de P1 nao entregar a mensagem liberando o recurso, poderia acontecer de o coordenador morrer. Poderia ter problema de escalabilidade de tamanho.
+
+2. *Permissao: Distribuido*
+O processo que precisa do recurso envia uma requisicao de permissao a todos os outros processos(inclusive para ele mesmo)
+   - A resposta a permissao(denominada de ACK) é enviada quando:
+     - O processo receptor nao tem interesse no recurso compartilhado ou
+     - o processo receptor está esperando por um recurso, mas tem menos prioridade (a prioridade é determinada via comparaçao de timestamps*)
+   - Em todos os outros casos, o envio da resposta é adiado.
+   - * timestamp é o horário do relógio ou um valor (e.g., contador).
+   - Exemplo: 3 processos com identificadores 0,1,2 e proprio ts. 
+     - Dois processos P0 e P2 querem acessar um recurso compartilhado ao mesmo tempo
+     - P0 e P2: manda o seu ts para todos e para ele mesmo
+     - P1 nao tem interesse no recurso entao manda ACK(permissao para os outros nodes)
+     - P0 tem o menor timestamp; logo tem maior prioridade, entao o P2 que manda ACK(OK) para P0.
+     - P0: recebeu OK dele mesmo, do P2 e do P1: 3 OK pode acessar o recurso
+     - P2: recebeu 2 OK, nao pode ainda acessar
+     - P0: acessou e liberou o recurso, respondendo OK para P2
+     - P2: 3 permissoes, pode acessar o recurso
+
+- *Baseado em tokens*: um token é passado entrer processos. Aquele processo que tiver o token pode entrar na secao critica ou passa-lo para frente quando nao tiver interessado.
+  - Organizar os processos em anel logico e passar um token entre eles. Aquele que estiver token pode entrar na secao critica(se ele quiser) = overlay logica de conexoes
+  - Anel:
+    - Algum deles tem um token node 0
+    - Node 0 usa o token e o recurso e passa o token para n1
+    - n0 nao poderia mais usar, somente n1
+    - n1 nao quer acessar e passa o token para n2
+  - Possiveis problemas: Se morre um node perde o token
+  - Cenario de que nenhum node quer somente o 7, porque nao passar direto ao inves de ir de sucessor em sucessor?
+
+- *Descentralizado*:
+Assuma que todo recurso é replicado N vezes (para não ter SPoF, i.e., maior disponibilidade).
+  - Cada replica está associada a seu próprio coordenador.
+  - acesso requer a maioria dos votos de m > N/2 coordenadores. E nao esperar OK de todos
+
+_Hipotese_
+Quando um coordenador morrer, ele se recuperará rapidamente, mas terá esquecido tudo sobre as permissões que ele deu.
+  - Risco? Após a recuperação, dar incorretamente a permissão de aceso para um processo
+
+> Quão robusto é esse sistema?
+Usando probabilidade
+- Seja p = ∆t/T a probabilidade do reset do coordenador.
+- [*************FORMULAS SEND HELP*************]
+Corretude é violada quando m − f coordenadores (corretos, sem
+reset) são minoria
+• I.e., existe uma maioria dando a exclusão mútua para outro. 
+- [ESTUDAR TABELA DE COMPARACAO - EXCLUSAO MUTUA]
+
+
+### Eleicao 
+Eleicao de um node que vai ser responsavel por um grupo de node ou servico. Selecionar um node.
+
+- Um algoritmo precisa que algum dos processos assuma o papel de coordenador. Como selecionar esse processo especial _dinamicamente_?
+
+- `OBS`: Em muitos sistemas o coordenador é escolhido manualmente(exemplo: servidores de dados). Isso leva a solucoes centralizadas *com um ponto unico de falha SPoF*
+- Perguntas:
+  - Se um coordenador é escolhido dinamicamente, até que ponto
+podemos dizer que o sistema será centralizado e não distribuído? O lider que for responsavel por dar permissao na exclusao mutua, nesse momento sim é contralizado no lider. Se o lider morre nao pode parar o sistema, necessario que outro node se torne lider, esse processo é distribuido.
+  - Um sistema inteiramente distribuído (ou seja, um sem um
+coordenador) é sempre mais robusto que uma solução centralizada/coordenada? Melhor mas talvez ineficiente [rever resposta do professor]. Precisaria estar muito bem parametrizado para aumentar a eficiencia
+
+- Todos os processos possuem um id unico, p.e ip, porta 
+- Todos os processos conhecem os ids de todos os outros processos no sistema (mas eles não têm como saber se os nós estão funcionando ou não)
+- A *eleição significa identificar o processo de maior id* que está funcionando em um dado momento
+
+#### Anel
+As prioridades –identificadores– dos processos são obtidas organizando-os em um anel (lógico). O processo com prioridade mais alta deve ser eleito como coordenador. 
+- Qualquer processo pode iniciar a eleição ao enviar uma mensagem
+de eleição ao seu sucessor. Se um sucessor estiver indisponível, a mensagem é enviada ao próximo successor. Um node nao pode ver somente o sucesso, mas o sucessor do sucessor, isso depende muito do sistema e implementacao.
+- Se uma mensagem for repassada, o remetente se adiciona na lista.
+Quando a mensagem voltar ao nó que iniciou, todos tiveram a chance de anunciar a sua presença. 
+- O nó que iniciou circula uma mensagem pelo anel com a lista de
+nós “vivos”. O processo com maior prioridade é eleito coordenador.
+- *Exemplo funcionamento*: anel de 0 a 7(id)
+    (1) - (2) - (3) - (4)
+     |                  |
+    (0) - (7) - (6) - (5)
+  - Suponha que um node6 vai iniciar o processo de eleicao porque ele descobriu que o sucessor morreu node7. O node7 era o lider(maior id).
+  - node6 nao sabe nda ainda, pq poderia ter um node8. 
+  - node6 vai mandar uma mensagem para o seu sucessor, nesse caso node0, enviando o identificador 6.
+  - Node0 passa a mensagem para o node1 com [6,0] o id dele proprio
+  - vai passando ate o node4 [6,0,1,2,3], porem nesse momento o node3 quer solicitar a eleicao(pode ter acontecido dele identificar que algum node morreu). Mas mesmo assim envia para o node4.
+  - Node4 agora tem 2 processos que passa para o node5 um com a lista [6,0,1,2,3,4] e outro com [3,4].
+  - Node6: recebe 2 processos um com a lista [6,0,1,2,3,4,5] e outro com [3,4,5] - CHEGOU DE VOLTA NO QUE INICIOU A ELEICAO
+  - Quando o node6 tem todos os processos, pode tomar a decisao e ser o lider. Porem temos um outro processo de eleicao [3,4,5], que vai repassando ate o node3 que abriu o segundo processo de eleicao porem nao acontece a mudanca de lider pq o maior é o 6.
+  - Consideramos apenas perda de node, mas pode ter perda de mensagem usando TCP, que trata isso.
+
+
+#### Bully - valentao
+Nao é usado, mas importante saber os principios que sao base para outros algoritmos recentes.
+- os N processos se conhecem
+- ganha o maior id
+Considere N processos {P0,..., PN−1} e seja id(Pk ) = k. Quando
+qualquer processo Pk perceber que o coordenador não está mais
+respondendo às requisições, ele começa uma nova eleição:
+1. Pk envia uma mensagem ELECTION para todos os processos com
+identificadores maiores que o seu: Pk+1, Pk+2,..., PN−1.
+2. Se ninguém responder, Pk ganha a eleição e se torna o coordenador
+3. Se um dos nós com maior id responder, esse assume a eleição e o
+trabalho de Pk termina.  O maior sempre ganha, por isso o nome de Bully “valentão”.
+4. O coordenador escolhido envia COORDINATOR a todos
+
+- *Exemplo funcionamento*: 8 nodes nao estao em anel, sem ordem
+  - Node 4 conhece todos os nodes maior que ele 5,6,7. Node 7 que morreu.
+  - Se os nodes maiores existirem envia Election para 5,6,7, porem somente responde OK os 5,6 pois sao maiores que 4.
+  - O node5 nao sabe se ele é lider, so sabe que o lider morreu, nao sabe quem
+  - node5 envia Election para o 6 e o 7. node 6 envia Election para o 7
+  - o node6 manda o OK para o 5. Mas o 6 precisa esperar o timeout, Passou um timeout da OK para o node 5 
+  - Portanto o node5 sabe que tem alguem maior que ele.
+  - Node6 se torna o lider, e avisa todos os nodes com mensagem Coordinator. E agora serve para dar exclusao mutua de algum recurso
+- Note que aqui assumimos o caminho feliz, que a comunicacao é confiavel, TCP, mensagem sem demorar muito
+
+
+### Conceitos - Relogios
