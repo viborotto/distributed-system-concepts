@@ -14,3 +14,5 @@
   * [primary-based: remote write, local write, chain]
   * [leader-less: quórum]
 * [Cassandra]
+
+### Introducao
