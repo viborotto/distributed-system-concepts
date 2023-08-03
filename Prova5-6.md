@@ -567,5 +567,53 @@ Cenarios; causal, conflitar,
 [Fazer]
 
 
+#### Relógios vetoriais: Multicast de Ordem Causal
+Ideia: Garantir que uma mensagem seja repassada (à aplicação) somente se todas as mensagens que as precederem por causalidade tiverem sido repassadas.
 
-#### Relógios vetoriais: Multicast
+- Multicasts *ordenados por causalidade* são menos restritivos do
+que multicasts com ordem total. Se duas mensagens não tem uma relação causal, então a ordem que elas serão repassadas (delivered) pode ser diferente para cada um dos processos.
+
+Por exemplo m1 enviado antes de m2, mas m2 chega antes nesse caso m2 sera postergada ate m1 ser enviado e recebido.
+_O relógio será ajustado somente quando enviar ou repassar uma mensagem m (e não quando receber m)_
+
+
+- Para garantir que as mensagens serão repassadas seguindo a ordem causal:
+  - Passos
+    1. Pi incrementa VCi[i] _somente quando enviar_ uma mensagem;
+    2. Pj “ajusta” VCj quando repassar1 uma mensagem:
+    VCi [k] = max{VCj [k], ts(m)[k]}, ∀k != j
+    - Atenção: as mensagens não são ajustadas quando são recebidas, mas sim quando elas são repassadas (delivered) à aplicação
+    - Note que não incrementa o vetor quando não é envio
+    3. Além disto, Pj posterga o repasse de m (enviada por Pi ) até que:
+      - ts(m)[i] = VCj [i] + 1. (m é a próxima msg que Pj espera de Pi )
+      - ts(m)[k] ≤ VCj [k] para k != i. (Pj já repassou todas as mensagens Pi que repassou)
+
+*EXEMPLO:*
+[REVER]
+
+
+*EXERCICIO:*
+Tome VC3 = [0, 2, 2], ts(m) = [1, 3, 0] vinda de P1. Que informação P3 tem antes de receber m e o que ele irá fazer quando receber m ?
+[REVER]
+
+
+#### Relógios vetoriais: DynamoDB
+- Serviço de banco de dados NoSQLrápido e para qualquer escala
+- Alto desempenho para 99% das requisições: acesso a dados em < 300ms em 2007 (10 mssegundo o site em 2019)
+- Alta disponibilidade, _consistência eventual_
+
+*Consistencia*: A consistência é obtida por versionamento (com relógios vetoriais).
+- O objetivo fundamental do design é: “writes are never rejected”
+- Nota: writes em diferentesservidores (ao mesmo tempo) podem
+gerar inconsistências.
+
+This shows that divergent versions are created rarely.
+Porém “DynamoDB can handle more than 10 trillion requests per day
+and can support peaks of more than 20 million requests per second”.
+Em [2022], foram 89 milhões de requisições por segundo.
+
+#### Relógio lógico: Exercício
+[Imagem]
+
+#### Relógio Vetorial: Exercício
+[Imagem]
