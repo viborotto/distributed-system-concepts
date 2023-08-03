@@ -220,8 +220,8 @@ Cada entrada do diretório consiste em um par (atributo, valor), unicamente nome
   * [token]
   * [decentralizado]
 * [Eleicao]()
-  * Anel
-  * Bully
+  * [Anel]
+  * [Bully]
 
 Problemas que devem ser tratados em sistemas distribuidos
 ### Exclusao mutua
@@ -347,5 +347,225 @@ trabalho de Pk termina.  O maior sempre ganha, por isso o nome de Bully “valen
   - Node6 se torna o lider, e avisa todos os nodes com mensagem Coordinator. E agora serve para dar exclusao mutua de algum recurso
 - Note que aqui assumimos o caminho feliz, que a comunicacao é confiavel, TCP, mensagem sem demorar muito
 
+*Perguntas*
+- _Posso usar eleição para exclusão mútua? Como?_
+Sim, em sistemas distribuídos é possível usar um algoritmo de eleição para implementar exclusão mútua, ou seja, garantir que apenas um processo por vez tenha acesso a um recurso compartilhado. Existem vários algoritmos de eleição que podem ser adaptados para esse propósito. Um exemplo comum é o algoritmo de eleição baseado em anéis (ring-based election).
+É importante ressaltar que os algoritmos de eleição devem ser projetados de forma que sejam tolerantes a falhas e evitem problemas como a formação de múltiplos líderes (co-líderes) ou a exclusão permanente de nós (deadlocks). Além disso, podem ser necessários mecanismos adicionais para lidar com falhas e partições na rede.
+Os algoritmos de eleição são úteis em cenários onde existe a necessidade de coordenação entre os nós para acessar recursos críticos ou para evitar conflitos em operações distribuídas. Eles são amplamente utilizados em sistemas distribuídos para garantir a consistência e a integridade dos dados e para fornecer um controle eficiente sobre recursos compartilhados.
+
+- _Posso usar exclusão mútua para eleição? Como?_
+Sim, em sistemas distribuídos, é possível usar o conceito de exclusão mútua para implementar um algoritmo de eleição. A ideia é que, durante o processo de eleição, apenas um processo pode ser escolhido como o líder, evitando que múltiplos processos se tornem líderes ao mesmo tempo.
+
+Um exemplo de algoritmo de eleição que utiliza o conceito de exclusão mútua é o "Bully Algorithm" (algoritmo do valentão). Este algoritmo é geralmente aplicado em sistemas distribuídos com topologia de rede tipo estrela, onde cada processo possui um identificador exclusivo (geralmente um número inteiro) que representa sua "força" em relação aos outros processos.
+
+O algoritmo do Bully é tolerante a falhas e garante que apenas um processo se torne o líder por vez, seguindo a ideia de exclusão mútua. No entanto, é importante notar que existem outros algoritmos de eleição, como o "Ring-based Election", mencionado anteriormente, que também podem ser usados para implementar exclusão mútua durante o processo de eleição em sistemas distribuídos. A escolha do algoritmo depende da topologia da rede e dos requisitos específicos do sistema distribuído.
+
 
 ### Conceitos - Relogios
+* [Relogios fisicos]()
+  * Sincronizacao interna
+  * Sincronizacao externa
+* [Relogios logicos]()
+  * Multicast de Ordem Total
+* [Relogios vetoriais]()
+  * Multicast de Ordem Causal
+
+Um dos problemas é que nao tem um tempo/relogio global. E queremos fazer uma sincronizacao de relogios para as acoes que cada computador deve tomar.
+
+### Relogios fisicos
+Em sistemas centralizados a definicao de horario nao é ambigua(um unico computador). Porem isso nao é o que acontece em muitos dos sistemas.
+
+- Em sistemas distribuídos isto não é verdade (é ambígua)
+- Mesmo em sistemas multi-processador pode não ser verdade
+- Exemplo um processo que comecao em maquina1 e envia para maquina2 continuar, relogios diferentes podendo estar atrasado ou adiantado mesmo que segundos e milissegundos. Por isso é necessario a sincronizacao, para minimizar problemas como esse.
+
+
+
+- *relogios atomicos*: em 1948 com a invencao do relogio atomico, passou a ser possivel medir o tempo com muito mais precisao. Custo elevado, somente empresas grandes.
+
+<u>UTC(Universal Coordinated Time): baseado em relogio atomico, media dos que existem no mundo</u>
+
+O valor UTC é enviado via broadcast por satelite e por ondas curtas de radio. Satelites tem acuracia de +- 0.5ms.
+
+Em sistemas distribuidos Precisao é diferente de acuracia.
+
+*Precisao*: O objetivo é tentar fazer com que o desvio entre dois relogios em quaisquer duas maquinas fique dentro de um limite especificado.
+
+*Acuracia*: o quao defasado esta o seu relogio de uma hora verdadeira UTC, queremos manter o relogio limitado a um valor de acuracia.
+
+Sincronizacao dos relogios, podem ser uma associada a precisao e uma associada a acuracia
+1. *Sincronizacao interna*: manter a `precisao` dos relogios(somente entre eles)
+2. *Sincronizacao Externa*: manter a `acuracia` dos relogios(com o do mundo real)
+
+
+> [Slides 8-13, nao tem no video - Relógios Físicos: ajuste de horários] - pedir ajuda
+Para recuperar o horario atual de um servidor: precisamos alem de recuperar o horario, precisamos do tempo de propagacao(round trip time)- RTT da request. 
+   - Imagine que Maquina 1 envia a requisicao ts=1, essa req somente chega em M2 ts=2, e processo a requisicao quando ts=3, chega a resposta em M1 quando ts=4 ou seja temos que considerar todos esses atrasos
+   - RTT = (T4 - T1) - (T3 - T2)
+   - Exemplo RTT = 65 ms tempo de demora
+- Podemos calcular agora a diferenca relativa entre os horarios servidores(offset) - teta
+  - Consigo saber quanto atrasado ou adiantado M1 comparado com M2
+  - teta = [(T2 - T1) + (T3 - T4)]/2
+  - Exemplo teta = -128.5 ms quer dizer que o relogio M1 esta atrasado 
+  - Um numero positivo em teta, indica que o relogio de 1 esta mais rapido e um negativo significa que esta mais lento -> [atrasado ou adiantato?] ? 
+
+#### Sincronizacao Externa (NTP)
+Network Time protocol: Colete oito (θ,δ) e escolha os offset θ cujos atrasos RTT δ são minimais. Sincronia de 1-50 ms
+Funcionamento: 
+  - Varios nodes com relogios atomicos(Stratum0), primeira camada (Stratum1), os nodes da primeira camada tem `acesso direto/fisico` aos relogios atomicos. 
+  - A partir do stratum1 somente conexoes por rede que tem delay, e precisam ser sincronizados
+  - Pega uma quantidade e escolhe os que tem menor delay
+- EXTERNA: por usar relogios atomicos
+
+#### Sincronizacao Interna (Berkeley)
+Algoritmo de Berkeley: permita o servidor de hora(referencia de mais preciso) sonde todas as maquinas periodicamente, e calcula uma media informando cada mquina como ela deve ajustar o seu _horario relativo ao seu horario atual(servidor interno)_, adiantando ou atrasando.
+
+- Nota: Você terá todas as máquinas em sincronia entre 20 e 25 ms. Você nem precisa propagar o horário UTC (Universal Coordinated Time, horário real medido em 50 relógios atômicos no mundo).
+
+> É *fundamental*: saber que atrasar o relógio `nunca` é permitido. Você deve fazer ajustes suaves. Na sincronização de relógios em sistemas distribuídos, geralmente é evitado atrasar o relógio porque atrasos excessivos podem causar problemas de `consistência` e sincronização inadequada entre os diferentes componentes do sistema.
+> Por exemplo entao se voce ta adiantado, nao vai atrasar o relogio, mas sim fazer com que o proximo segundo demore mais a duracao, para sincronizar
+
+*Funcionamento:*
+- 3 Servidores, S1 horario mais preciso ts=3:00 e contem o daemon, envia o horario mais preciso para os outros 2 servidores
+- S2 e S3 enviam quao atrasados e adiantados estao em relacao a S1, exemplo S2 -10, S3 +25
+- O daemon S1 faz os calculos e chegam a conclusao de que todos deveriam ter 3:05 e manda o quanto precisa cada um ajustar para chegar nesse horario. mudancas graduais
+
+
+### Relogios Logicos
+O que importa na maior parte dos sistemas distribuídos não é fazer com que todos os processos concordem com a hora exata (e.g., como NTP), mas sim fazer com que eles concordem com a *ordem* em que os eventos ocorreram.
+- Ou seja, precisamos de uma noção de ordem entre os
+eventos.
+
+#### A relação “aconteceu-antes” - Ordem Causal
+- se a e b são dois eventos de um mesmo processo e a ocorreu antes de b, então a → b
+- se a for o evento de envio de uma mensagem e b for o evento de recebimento desta mesma mensagem, então a → b
+- se a → b e b → c, então a → c
+- `Eventos concorrentes`: Se dois eventos x e y ocorrem em processos distintos e esses processos nunca interagem (mesmo que indiretamente) então nem x → y nem y → x são verdade. São eventos concorrentes. Quando se diz que dois eventos são concorrentes na verdade quer dizer que nada pode (ou precisa) ser dito sobre a sua ordem.
+  - Nota: Isso introduz uma noção de _ordem PARCIAL dos eventos_ em um sistema com processos executando concorrentemente 
+
+> Como fazemos para manter uma visão global do comportamento do sistema que seja consistente com a relação aconteceu-antes?
+
+#### Relógio lógico de Lamport
+A utilizacao de timestamp. Associar um timestamp C(e) a cada evento e tal que:
+- P1 se a e b são dois eventos no mesmo processo e a → b, então é obrigatório que C (a) < C (b)
+- P2 se a corresponde ao envio de uma mensagem m e b ao recebimento desta mensagem, então também é válido que C (a) < C (b)
+- `Outro problema`: Como associar um timestamp a um evento quando não há um relógio global? 
+- `Solução`: manter um conjunto de relógios lógicos consistentes, um para cada processo
+  - Cada processo Pi mantém um contador Ci local e o ajusta de acordo com as seguintes regras:
+  1. para quaisquer dois eventos sucessivos que ocorrer em Pi, Ci é incrementado em 1
+  2. toda vez que uma mensagem m for enviada por um processo Pi, a mensagem deve receber um timestamp ts(m) = Ci
+  3. sempre que uma mensagem m for recebida por um processo Pj, Pj ajustará seu contador local Cj para max{Cj , ts(m)} (maximo entre o ts recebido e o local) executará o passo 1 antes de repassar m para a camada aplicação
+
+> _AJUSTES SAO REALIZADOS NA CAMADA DO MIDDLEWARE_
+
+Observações:
+- a propriedade P1 é satisfeita por (1); propriedade P2 por (2) e (3)
+- ainda assim pode acontecer de dois eventos ocorrerem ao mesmo
+tempo (concorrente). _Desempate usando os IDs dos processos criam uma ordem TOTAL dos eventos_. Sem isso, é ordem parcial.
+
+
+*Exemplo*
+3 processos com contadores de eventos funcionando em velocidades diferentes
+P1: de 6 em 6
+P2: de 8 em 8
+P3: de 10 em 10
+Exemplo se P3 60 manda mensagem m3 pra P2 56, 56 < 60, ai 56 vira 60+1 = P2 61, ajusta o relogio P2, porem os proximos do relogio sao ajustados tbm +8 : 61, 69, 77. 
+- Mantendo uma ordem total dos eventos
+
+#### Relogio logico: Multicast de ordem total
+`Problema`: Algumas vezes precisamos garantir que atualizações concorrentes em um banco de dados replicado sejam vistas por todos _como se tivessem ocorrido na mesma ordem._
+  - P1 adiciona R$ 100 a uma conta (valor inicial: R$ 1000)
+  - P2 incrementa a conta em 1%
+  - DB replicado DB1 e DB2
+  - Imagine Brasil e Japao, o P1 no Brasil e P2 no japao, acontece que P1 vai demorar mais pra chegar no japao e P2 vai demorar pra chegar no brasil
+  - Na ausência de sincronização correta, a ordem resulta em:
+    réplica #1 ← R$ 1111, enquanto que na réplica #2 ← R$ 1110.
+    `INCONSISTENCIA`
+
+
+`Solucao`:
+- Pi envia uma mensagem com timestamp mi para todos os outros. A mensagem é colocada em sua fila local queuei(estrutura pra ter uma ordem) .
+- Toda mensagem que chegar em Pj é colocada na fila queuej priorizada pelo seu timestamp e confirmada (acknowledged ACK) por todos os outros processos
+- Pj repassa a mensagem mi para a sua aplicação somente se:
+  (1) mi estiver no topo da fila queuej local
+  (2) todos os acknowledgements foram recebidos para mi
+- Assumimos que a comunicação é confiável(TCP) e que a ordem FIFO (entre as mensagens enviadas por um processo) é respeitada.
+
+*Exemplo - Funcionamento*
+Fila1 P1        Fila2 P2
+- Fila ordenada por prioridade(mais acima mais prioridade)
+- P1 quer enviar a mensagem de adicionar 100 reais na conta, m1
+- P1 Emite m1, relogio ts=1
+- P2 Emite m2, relogio ts=1
+- Por enquanto sao concorrentes
+- P1 envia m1 Fila1[m1,P1,1]
+- P2 envia m2 Fila2[m2,P2,1]
+- Suponha que m2 chega mais rapido que m1
+- m1 tem mais prioridade que m2 [ = timestamp, porém pr(P1) > pr(P2) ] - desempate
+- adiciona m2 na Fila1 e m1 na Fila2
+- Agora, P1 deve analisar se pode enviar ou não o ACK para cada mensagem da fila.
+- P1 enviará um ACK (m1,P1,2) para P2 ? Sim, porque o processo associado a m1 corresponde ao mesmo processo que está analisando, ele mesmo.
+- P1 enviará um ACK (m2,P2,2) para P2? NÃO, porque:
+  - o processo associado a m2 tem menor prioridade que P1
+  - P1 não recebeu ainda o ACK para (m1,P1,2) vindo de P2.
+- Por sua vez, P2 também deve analisar se pode enviar ou não o ACK para cada mensagem da fila
+- P2 enviará um ACK (m1,P1,2) para P1 ? Sim, porque o processo associado a m1 tem mais prioridade que P2.
+- P2 enviará um ACK (m2,P2,2) para P1? Sim porque o processo associado a m2 corresponde ao mesmo processo que está analisando
+- `Resumindo`:
+  - P1 enviou ACK(m1) e recebeu de P2 ACK(m1) e ACK(m2)
+  - P2 enviou ACK(m1), ACK(m2) e recebeu de P1 somente ACK(m1)
+- Quando P1 processa m1, pode enviar ACK(m2,P2,2)
+- Quando P2 recebe ACK(m2) -> Processa m2
+
+*o algoritmo de multicast funciona?*
+- se uma mensagem m ficar pronta em um processo S, m foi recebida por todos os outros processos (que enviaram ACKs dizendo que m foi recebida)
+- se n é uma mensagem originada no mesmo lugar que m e for enviada antes de m, então todos receberão n antes de m e n ficará no topo da fila antes de m (pela ordem FIFO)
+- se n for originada em outro lugar que m é um pouco mais complicado. Pode ser que m e n cheguem em ordem diferente em S, mas é certeza de que antes de tirar um deles da fila, S terá que receber os ACKs de todos os outros processos, o que permitirá comparar os valores dos relógios e repassar à aplicação as mensagens na ordem total
+
+
+### Relogios Vetoriais
+Bastante utilizado: amazon cart, linkedin. 
+_Mas qual a diferenca de Relogios de LAmport e vetoriais?_
+O relógio de Lamport garante que se a → b, então C (a) < C (b).Porém não garante que se C (a) < C (b) então a tenha ocorrido antes de b. Ou seja, não sabemos o relacionamento de a e b só comparando seus timestamps.
+- Exemplo:
+  - Evento a: m1 foi enviado em T = 6;
+  - Evento b: m2 foi enviado em T = 20.
+  - Ou seja, C (a) < C (b) porém não podemos concluir que a → b
+
+> Lembre que: “Se dois eventos x e y ocorrem em processos distintos e nunca interagem então nem x → y nem y → x são verdade”
+
+#### Relógios vetoriais: capturando a dependência causal
+Relógios vetoriais [Fidge, Mattern 1988] foram criados para resolver as limitações do relógio de Lamport, i.e., o fato de que ele não garante que se C (a) < C (b) então a → b.
+
+Cada processo tem um relogio, lamport ja tinha, mas agora vetor em que cada slot vai ser o relogio de um determinado processo
+
+`Solução`: cada Pi mantém um vetor VCi (Vector Clock)
+  - VCi [i] é o relógio lógico local do processador Pi
+  - VCi [j] = k, então Pi sabe que k eventos ocorreram em Pj
+  - Cada processo tbm enxerga o relogio de outros processos, diferente de lamport que so enxergava o timestamp local, e de si
+
+- Dizemos que b pode depender causalmente de a se ts(a) < ts(b) com: 
+  - para todo j, ts(a)[j] ≤ ts(b)[j] e 
+  - existe pelo menos um índice j’ para o qual ts(a)[j’] < ts(b)[j’]
+    - e.g., ts(a) = [1,2,1]. ts(b) = [1,2,2]. ts(a) < ts(b) ?
+    - Evento a aconteceu antes de b? 1 <= 1 | 2 <= 2 | 1 <= 2 = SIM aconteceu antes de b
+
+
+*gerenciamento no middleware*
+1. antes da execução de um evento, Pi executa VCi [i] ← VCi [i] + 1 [Igual lamport aqui]
+2. antes do processo Pi enviar uma mensagem m para Pj , ele define o timestamp (no vetor) de m, ts(m), como VCi (após executar o passo 1, registrando assim o envio)
+3. no recebimento de uma mensagem m, o processo Pj define VCj [k] ← max{VCj [k], ts(m)[k]} para todo k e executa o passo 1 (registrando assim o recebimento) Maximo do que eu conheco dentro do vetor e ts da mensagem
+
+> Muito similar à regra do relógio lógico de Lamport, porém específica para cada processo
+
+*Exemplo funcionamento*
+[Imagem]
+Cenarios; causal, conflitar, 
+
+
+*Exercicios*
+[Fazer]
+
+
+
+#### Relógios vetoriais: Multicast
