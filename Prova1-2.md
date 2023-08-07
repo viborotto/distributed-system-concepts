@@ -269,7 +269,7 @@ Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa d
 Essencialmente um grupo de computadores de boa qualidade conectados via LAN, rede local.
   * Homogêneo: mesmo SO, hardware quase idêntico
   * Um unico node gerenciador do cluster(master node)
-
+![Cluster Computing](URL da imagem)
 
 **b.** Grade    
 O próximo passo: vários nós vindos de todos os cantos.
@@ -386,7 +386,7 @@ Ideia basica: posso fazer intercambio de informacoes por meio de enconstro(Pocke
 * [Sistemas Distribuídos Autogerenciáveis]()
 
 
-*Estilos Arquiteturais*
+**Estilos Arquiteturais**
 Um estilo é definido em termos de: componentes substituiveis com interfaces bem definidas; o modo como como os compoenentes sao conectados entre si; como os dados sao trocados entre componentes; como esses componentes e conectores sao configurados conjuntamente em um sistema.
 `Conector`: um mecanismo que intermedia comunicacao, coordenacao ou cooperacao entre componentes. Exemplo: RPC, mensagem, streaming
 1. Arquiteturas em camadas
@@ -397,28 +397,28 @@ Um estilo é definido em termos de: componentes substituiveis com interfaces bem
 
 #### Arquitetura em camadas, objetos, eventos e recursos.
 
-1. *Arquiteturas em camadas*
+1. **Arquiteturas em camadas**
 - Ideia basica: organize os componentes `logicamente diferentes` e os distribua entre as maquinas disponiveis. Cada camada com sua responsabilidade
 - Esse estilo é usado em sistemas cliente-servidor
 - Outro exemplo poderia ser camada de IU, camada de processamento, camada de dados. Nao existe uma comunicacao direta entre IU e DB, interface bem definida que mantem uma ordem e organizacao das camadas.
 
 
-2. *Arquiteturas baseadas em objetos*
+2. **Arquiteturas baseadas em objetos**
 - Ideia basica: organize os compodentes `logicamente diferentes` e os distribua entre as maquinas disponiveis.
 - Estilo orientado a objetos usado em `sistemas de objetos distribuídos`.(Exemplo RMI)
-- *Encapsulamento*: Os objetos ficam distribuídos pelo sistema (servidores). Apesar do usuário fazer chamadas que são equivalentes a chamadas locais, elas podem estar sendo feitas em objetos remotos(em outras maquinas)-> por meio de _Proxy_ que tem as informacoes basicas e necessarias para comunicacao com outra maquina.
+- **Encapsulamento**: Os objetos ficam distribuídos pelo sistema (servidores). Apesar do usuário fazer chamadas que são equivalentes a chamadas locais, elas podem estar sendo feitas em objetos remotos(em outras maquinas)-> por meio de _Proxy_ que tem as informacoes basicas e necessarias para comunicacao com outra maquina.
 - Comunicacao entre objetos por meio de conectores e interfaces bem definidas
 - mais complexo que o de camadas que tem comunicacao unidirecional
 
 
-3. *Arquiteturas baseadas em eventos e dados*
+3. **Arquiteturas baseadas em eventos e dados**
 - Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico).
 - Publish/subscribe[desacoplado na referencia], subscribes precisam estar online
 - Uso de event bus que nao depende de IP e porta, tem seus proprios identificadores unicos.
 - Espaço de dados compartilhados [desacoplado na ref. e tempo]
 
 
-1. *Arquiteturas centradas em recursos - daos compartilhados*
+1. **Arquiteturas centradas em recursos - daos compartilhados**
 Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico) e tempo(assincronos). Isso significa que a mensagem nao precisa que o subscribe esteja online, pois persiste o dado e aguarda no middleware ate que apareca alguem online.
 Vê um sistema distribuído como uma coleção de recursos gerenciados individualmente por componentes. Recursos podem ser adicionados, removidos recuperados e modificado por aplicações remotas - REST.
 - Recursos são identificados usando um único esquema de nomeação
@@ -459,16 +459,16 @@ A configuracao mais tradicionar seria: 2 camadas fisicas(2 maquinas) + 3 logicas
 
 
 3. Arquiteturas descentralizadas
-- *P2P ESTRUTURADO*: os nós são organizados seguindo uma
+- **P2P ESTRUTURADO**: os nós são organizados seguindo uma
 estrutura de dados distribuída específica - Amazon DynamoDB
   - `ideia basica`: Organizar os nós em uma rede overlay estruturada, tal como um anel lógico, e fazer com que alguns nós se tornem responsáveis por alguns serviços baseado unicamente em seus Ids
   - Outra estrutura poderia ser nodes em um espaco d-dimensional e faca todos os nodes ficarem responsaveis por um dado em uma regiao especifica
   - O sistema provê uma operação _LOOKUP(key)_ que irá fazer o roteamento de uma requisição até o nó correspondente usando as conexões lógicas.
   - Node pode atuar tanto como cliente, quanto como servidor(chamado de peer)
-  - [Exemplo na imagem do anel - lookup]
+  - [Exemplo na imagem do anel - lookup][?]
 
 
-- *P2P NAO-ESTRUTURADO*: os nodes selecionam aleatoriamentes seus vizinhos - Skype
+- **P2P NAO-ESTRUTURADO**: os nodes selecionam aleatoriamentes seus vizinhos - Skype
   - Muitos sistemas P2P não-estruturados tentam manter um `grafo aleatório`
   - Cada node deve contactar um outro node selecionado aleatoriamente:
     - Cada participante mantem uma visao parcial da rede consistindo de c outros nodes(denominados vizinhos)
@@ -478,7 +478,7 @@ estrutura de dados distribuída específica - Amazon DynamoDB
   
   `Gossiping`: é um tipo de protocolo de comunicação em que os nós do sistema trocam informações entre si de forma aleatória e assíncrona. No entanto, o gossiping também pode ter algumas desvantagens, como a possibilidade de propagação de informações desnecessárias, o que pode aumentar o tráfego de rede. Portanto, é importante projetar cuidadosamente os algoritmos de gossiping e ajustar os parâmetros para equilibrar o desempenho e a eficiência do sistema. Além disso, é essencial garantir que as mensagens sejam transmitidas de forma confiável e que a consistência eventual seja alcançada para evitar problemas de sincronização e conflitos de dados.
 
-  *Superpeers*
+  **Superpeers**
   - As vezes selecionar alguns nodes para realizar algum trabalho especifico pode ser util, responsabilidade maior. Exemplos:
     - Peers para manter um indice (para buscas)
     - Peers para monitoras o estado da rede
@@ -487,7 +487,7 @@ estrutura de dados distribuída específica - Amazon DynamoDB
 
 4. Arquiteturas hibridas
    
-- *P2P HIBRIDO*: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (edge-servers), utilizados com frequência como Content Delivery Networks (redes de distribuição de conteúdo).
+- **P2P HIBRIDO**: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (edge-servers), utilizados com frequência como Content Delivery Networks (redes de distribuição de conteúdo).
   - `Ideia basica`: Assim que um node indentifica de onde o arquivo sera baixado, ele se junta a uma swarm(multidao) de pessoas que, _em paralelo_, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
 
 | Praticamente todos os casos são exemplos de redes overlay: dados são roteados usando conexões definidas pelos nós
@@ -495,14 +495,15 @@ estrutura de dados distribuída específica - Amazon DynamoDB
 
 #### Arquiteturas x Middleware
 
-*Middleware:* é um tipo de software que atua como um intermediário ou "meio de campo" entre diferentes aplicativos ou sistemas. Sua principal função é facilitar a comunicação e a interação entre esses sistemas, permitindo que eles se conectem e troquem informações de maneira eficiente.
+**Middleware:** é um tipo de software que atua como um intermediário ou "meio de campo" entre diferentes aplicativos ou sistemas. Sua principal função é facilitar a comunicação e a interação entre esses sistemas, permitindo que eles se conectem e troquem informações de maneira eficiente.
 
 Os middlewares são amplamente utilizados em arquiteturas de software distribuído e sistemas distribuídos, onde vários componentes, serviços ou aplicativos precisam trabalhar juntos para cumprir uma determinada função ou oferecer um serviço.
 
 Em muitos casos, arquiteturas/sistemas distribuídos são desenvolvidos de acordo com um estilo arquitetural específico. O estilo escolhido pode não ser o melhor em todos os casos ⇒ é necessário adaptar o comportamento da arquitetura usando um middleware (dinamicamente).
 
 Dentro do middleware termos os Interceptors:
-*Interceptors*
+
+**Interceptors**
 Interceptam o fluxo de controle normal quando um objeto remoto for invocado. 
 
 App Cliente -Request method-> Object middleware -Request-> SO -Request-> Another machine
@@ -510,7 +511,7 @@ Ou seja nesse caso o middleware nao faz nada, mas poderia usar interceptors que 
 
 #### Sistemas Distribuídos autogerenciáveis
 
-Sistemas e arquiteturas de software que consideram a *adaptacao automatica* do seu comportamento. Sistemas muito grandes, com muitos nodes. Impossivel intervencao humana de maneira eficiente, precisa de algo automatizado.
+Sistemas e arquiteturas de software que consideram a **adaptacao automatica** do seu comportamento. Sistemas muito grandes, com muitos nodes. Impossivel intervencao humana de maneira eficiente, precisa de algo automatizado.
 - Autoconfiguração
 - Autogerenciamento
 - Autocura
@@ -522,3 +523,4 @@ Em muitos casos, sistemas auto-* são organizados como um sistema de regulação
 Por exemplo sistema com uma configuracao inicial, que passa para o sistema distribuido. Esse sistema tem uns ruidos incontrolaveis, e esse comportamento observado serve como metrica para estimar e analisar pelo proprio sistema.
 Com isso tem-se estrategias dependendo do funcionamento.
 *********Imagem de estrategias*****
+[?]

@@ -46,3 +46,42 @@ Um exemplo disso é a transparência de acesso em sistemas pervasivos. Nesses si
 Como ja estudado os sistemas pervasivos podem ser associados com IoT. Outros exemplos poderiam ser sistemas de automacao industrial, cidades inteligentes, sistemas de entretinimento domesticos, etc.
 
 ## Exercicios Capitulo 2
+
+1. _Se um cliente e um servidor forem colocados longe um do outro, podemos ver a latencia de rede dominar o desempenho global. Como podemos atacar esse problema?_
+Atraves do uso de caching e replicacao em diferentes locais, 
+
+2. _O que é um arquitetura cliente-servidor de tres divisoes?_
+Uma arquitetura cliente-servidor de tres divisoes, significa que sao 3 camadas logicas: camada de apresentacao(UI) que contem o necessario para a aplicacao interagir com o usuario. Camada de negocio(application) que contem as funcionalidades da aplicacao, e acamada de dados(database) que contem os dados que o cliente quer manipular atraves dos componentes da aplicacao.
+
+3. _Qual a diferencao entre uma distribuicao vertical e uma distribuicao horizontal?_
+Essas distribuicoes estao relacionadas a forma como os dados e as funcionalidades sao divididos e organizados para suportar a escalabilidade e o desempenho do sistema.
+- distribuicao vertical: diferentes componentes ou modulos sao colocados em servidores distintos. Cada servidor pode ser dedicado ao banco de dados, outro aos servicos web e ate mesmo outro para logica de negocios. Util quando ha a necessidade de especializacao e otimizacao de recursos para funcoes especificas. Porem pode sobrecarregar a comunicacao entre os servidores especialmente se as interacoes entre os modulos forem frequentes.
+- distribuicao horizontal: os dados e funcionalidades sao particionados e distribuidos em varios servidores, de forma que cada servidor contenha uma copia identica. É eficiente para escalabilidade, pois permite adicionar mais servidores conforme a demanda aumetnsa, distribuindo a carga de trabalho de maneira uniforma, ajjuda a melhorar o desempenho geral do ssitema
+
+4. [?]
+
+5. _Em uma rede de sobreposicao estruturada, mensagens sao roteadas de acordo com a topologia da sobreposicao. Cite uma importante desvantagem dessa abordagem._
+Uma importante desvantagem é a falta de flexibilidade para acomodar alteracoes na topologia ou na distribuicao de dados. Como as rotas de comunicacoes é determinada pela estrutura da sobreposicao, qualquer alteracao na rede ou adicao/remocaoo de nodes pode exigir uma reorganizacao completa da estrutura, resultando em um custo computacional e comuicacao. Alem disso podemos ter pontos de gargalo se algum node falhar ou ficar congestionado.
+
+
+## Exercicios Capitulo 3
+
+1. _Nesse problema voce devera fazer uma comparacao entre ler um arquivo usando um servidor de arquivos monothread ou um servidor multithread. Obter uma requisicao para trabalho, despacha-la e fazer o resto do processamento necessario demora 15ms. Considerando que os dados necessarios estrejam em um cache na memoria principal. Se for preciso uma operacao de disco, como acontece em um terco das vezes, serao necessario mais 75 ms, durante os quais o thread dorme. Quantas requisicoes por seguindo o servidor pode manipular se for monothread? E se for multithread?_
+   
+2. Teria sentido limitar a quantidade de threads em um processo servidor?
+
+
+3. Descrevemos no texto um servidor de arquivo multithread mostrando por que ele é melhor do que um servidor  monothread e um servidor com maquina de estado finito. Ha alguma circunstancia na qual um servidor monothread poderia ser melhor? De um exemplo.
+4. Proxies podem suportar transparencia de replicacao invocando cada replica, copmo explicado no texto. O lado servidor de uma aplciacao pode estar sujeito a uma chamada replicada?
+5. Construir um servidor concorrente por meio da multiplicacao de um processo tem vantagens e desvantagens em comparacao com servidores multithread. Cite algumas.
+6. Como podemos impedir que uma aplicacao evite um gerenciador de janela, e, assim consiga baguncar completamente uma tela?
+7. Um servidor que mantem uma conexao TCP/IP com um cliente é com estado ou sem estado?
+8. Imagine um servidor Web que mantenha uma tabela na qual enderecos IP de clientes sejam mapeaedos para as paginas Web acessadas mais recentemente. Quando um cliente se conecta ao servidor, este consulta o cliente em sua tabela e caso o encontre, retorna a pagina registrada. Esse servidor é com estado ou sem estado?
+9.  Considere um processo P que requer acesso ao arquivo F, disponivel na maquina em que P esta executando no momento em questao. Quando P passa para outra maquina, ele ainda requer acesso a F. Se a vinculacao arquivo-maquina for fixam como poderia ser implementada a referencia a F no ambito do sistema?
+10. Descreva com detalher como pacotes TCP fluem no caso de transferencia TCP junto com informacoes sobre enderecos de fonte e destino nos varios cabecalhos.
+
+## Exercicios Capitulo 4
+
+1. 
+
+## Exercicios Capitulo 5
