@@ -269,7 +269,7 @@ Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa d
 Essencialmente um grupo de computadores de boa qualidade conectados via LAN, rede local.
   * Homogêneo: mesmo SO, hardware quase idêntico
   * Um unico node gerenciador do cluster(master node)
-![Cluster Computing](https://github.com/viborotto/distributed-system-concepts/blob/main/imagens/RPC.png)
+![Cluster Computing](imagens/ClusterCompute.png)
 
 **b.** Grade    
 O próximo passo: vários nós vindos de todos os cantos.
@@ -331,7 +331,7 @@ Mas as vezes precisamos fazer comunicacao diretas, sem um intermediario -> **Ent
 * Transferencia de arquivos: simples mas nao flexivel. Pode ter problema de consistencia, precisaria conhecer o formato do arquivo, propagacao e notificacoes de atualizacao.
 * Banco de dados: bem mais flexivel, porem requer que haja um schema comum com riscos de gargalo.
 * RPC: efetivo quando a execucao das acoes sao distribuidas, estando o requisitante e o requisitado online. Chamando o metodo diretamente, reutilizando o modelo de negocio.
-********[IMAGEM RPC] - CAMADAS********
+![RPC](imagens/RPC.png)
 
 App -> metodo soma no import -> proxy(objeto tem o metodo soma dentro, mas sem implementar - casca de soma) -> acessa o computador que realmente tem o soma.
 Sendo assim o cliente faz chamadas ao metodo como se estivesse sendo executado na maquina local, mas o metodo pode estar sendo executado em maquinas remotas.
@@ -465,7 +465,7 @@ estrutura de dados distribuída específica - Amazon DynamoDB
   - Outra estrutura poderia ser nodes em um espaco d-dimensional e faca todos os nodes ficarem responsaveis por um dado em uma regiao especifica
   - O sistema provê uma operação _LOOKUP(key)_ que irá fazer o roteamento de uma requisição até o nó correspondente usando as conexões lógicas.
   - Node pode atuar tanto como cliente, quanto como servidor(chamado de peer)
-  - [Exemplo na imagem do anel - lookup][?]
+  - ![LOOKUP](imagens/LOOKUP.png)
 
 
 - **P2P NAO-ESTRUTURADO**: os nodes selecionam aleatoriamentes seus vizinhos - Skype
@@ -485,7 +485,7 @@ estrutura de dados distribuída específica - Amazon DynamoDB
     - Peers capazes de configurar conexoes
 
 
-4. Arquiteturas hibridas
+1. Arquiteturas hibridas
    
 - **P2P HIBRIDO**: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (edge-servers), utilizados com frequência como Content Delivery Networks (redes de distribuição de conteúdo).
   - `Ideia basica`: Assim que um node indentifica de onde o arquivo sera baixado, ele se junta a uma swarm(multidao) de pessoas que, _em paralelo_, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
