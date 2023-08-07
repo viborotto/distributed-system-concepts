@@ -228,7 +228,7 @@ Ip multicasting é normalmente considerado um servico padrao mas é uma hipotese
 Acima da camada de transporte
 - Prover servicoes e protocolos frequentemente usados que podem ser utilizados por varias aplicacoes diferentes
 - Um conjunto rico de protocolos de comunicacao
-- Des empacotamento de dados, necessarios para a integracao de sistemas
+- Desempacotamento de dados, necessarios para a integracao de sistemas
 - protocolos de gerenciamento de nomes, para auxiliar o compartilhamento de recursos
 - Protocolos de seguranca para comunicacoes seguras
 - mecanismos de escalabilidade como replicacao e caching

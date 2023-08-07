@@ -27,7 +27,7 @@
 
 ### Definicao de Sistemas Distribuidos
 
-Um sistema distribuido é um *sistema de software* que garante uma `colecao de elementos de computacao autonomos` que sao vistos pelos usuarios como um sistema _unico e coerente_
+Um sistema distribuido é um **sistema de software** que garante uma `colecao de elementos de computacao autonomos` que sao vistos pelos usuarios como um sistema _unico e coerente_
 
 def `colecao de elementos de computacao autonomos`: 
     - _Comportamento independente_ cada node e autonomo e portanto tem sua propria percepcao de tempo, <u>nao ha um relogio global</u>. 
@@ -43,19 +43,19 @@ def `colecao de elementos de computacao autonomos`:
 
 #### Organizacao
 
-*Redes de overlay*
+**Redes de overlay**
 Cada node na colecao se comunica apenas com nos do sistemas, seus vizinhos. O conjunto de vizinhos pode ser dinamico(saida e entrada de nos, dinamicamente) ou pode ser descoberto de forma implicita(nos ja comunicando, entra um nó que descobre a colecao por meio de um nó, e ai passa a fazer parte da colecao). `Nao necessariamente estao associados a estrutura fisica`, comunicacao logicamente entre os nos.
 
 Esse overlay fica acima da camada fisica dos roteadores, sobreposta, podendo ser em formato de anel(Estruturadas) com nodes antecessores e sucessores.
 
 
-*Tipos de overlay*
+**Tipos de overlay**
 Um exemplo bem conhecido de redes de overlay: sistemas p2p. A falha de um peer nao compromete o funcionamento do sistema.
 
-1. *Estruturada*
+1. **Estruturada**
   Cada node tem um <u>conjunto bem definido</u> de vizinhos com os quais pode se comunicar(arvore, anel). Exemplo: Amazon Cloudfront - arvore
 
-2. *Não Estruturada*
+2. **Não Estruturada**
     Cada node tem referencias a um conjunto <u>aleatoriamente</u> selecionado de outros nos no sistema. Exemplo: Stremio
 
 
@@ -71,7 +71,7 @@ A colecao de nos _opera sempre da mesma forma_, nao importando onde, quando ou c
 O problema: falhas parciais
 É inevitavel que a qualquer momento _um pedaco do sistema distribuido falhe_. esconder essas falhas parciais e sua recuperacao normalmente é muito dificil(em geral, impossivel)
 
-*Middleware: o SO dos SD*
+**Middleware: o SO dos SD**
 
 `O que tem em um Middleware?`
 Grosso modo, um conjunto de funções e componentes que não precisam ser reimplementados por cada aplicação separadamente.
@@ -98,7 +98,7 @@ Exemplos:
 
 Um dos problemas mais complexos para desenvolvedores de SD.
 
-*Tipos de Transparencia:*
+**Tipos de Transparencia:**
 
 * `Acesso`: Varios nodes, entao nao pode acontecer por exemplo de um node ter uma arvore de inteiro, e o outro uma arvore de float(o usuario nao precisa saber das diferencas entre as representacoes de dados, deve ser transparente). E nao interessa ao usuario, nao deve saber tambem COMO e ONDE esta sendo chamado os outros nodes, pois precisa ser um sistema unico(mecanismo de invocacao).
 * `Localizacao`: Esconder onde o objeto esta localizado(exemplo URLm, vc nao sabe onde esta a pagina web)
@@ -109,7 +109,7 @@ Um dos problemas mais complexos para desenvolvedores de SD.
 * `Falhas`: Esconder falhas e a possivel recuperacao de um objeto.
 
 
-*Graus de transparencia*
+**Graus de transparencia**
 
 Nao é possivel fazer um sistema totalmente transparente, pode ate ser um exagero as vezes. Exemplos:
 - Usuarios podem estar localizados em continentes diferentes
@@ -129,7 +129,7 @@ Podemos que a transparencia na distribuicao é um bom objetivo, mas atingir é u
 #### Abertura
 Sistemas Distribuidos abertos sao capazes de interagir com outros sistemas abertos. Utilizando interfaces(possui o cabecalho somente, nao implementacao)
 
-*Caracteristicas*
+**Caracteristicas**
 - devem respeitar interfaces bem definidas OK
 - devem permitir a portabilidade de aplicacoes OK
 - devem ser faceis de estender OK -> questoes de engenharia de software
@@ -143,12 +143,12 @@ Obs: Muitos desenvolvedores de sistemas distribuídos modernos usam o adjetivo �
 
 | Manter o desempenho mesmo que o aumento de requisicoes seja grande.
 
-1. *Tamanho, geografica, administrativa*
+1. **Tamanho, geografica, administrativa**
    
 Escalabilidade se refere a pelo menos três componentes:
-*a.* Número de usuários e/ou processos – *escalabilidade de tamanho*
-*b.* Distância máxima entre nós, as vezes nao depende somente do numero de usuarios mas de onde eles se localizam – *escalabilidade geográfica*
-*c.* Número de domínios administrativos, cada administrador tem suas politicas de acesso – *escalabilidade administrativa*
+**a.** Número de usuários e/ou processos – **escalabilidade de tamanho**
+**b.** Distância máxima entre nós, as vezes nao depende somente do numero de usuarios mas de onde eles se localizam – **escalabilidade geográfica**
+**c.** Número de domínios administrativos, cada administrador tem suas politicas de acesso – **escalabilidade administrativa**
 
 A maior parte dos servidores escalam apenas e ate certo ponto em tamanho, utilizando servidores poderosos (`scale-in`)
 
@@ -164,7 +164,7 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
 - Falhas em uma maquina nao devem arruinar a execucao do algortimo, ou seja mesmo cada maquina tendo uma informacao parcial se ha a replicacao quando falha uma todas as outras tem as informacoes replicadas
 - Nao eh possivel assumir a existencia de um relogio global
 
-  1. *Problemas na escalabilidade de tamanho*
+  1. **Problemas na escalabilidade de tamanho**
     escalabilidade de tamanho: Numero de usuarios e/ou processos 
 
     * Capacidade computacional, limitada pelas CPUs
@@ -174,21 +174,21 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
     Se aumenta o numero de usuarios e atinge a maxima de CPU, da mesma forma o HD pode atingir 100% de uso.
     `Como estimar a capacidade?`
 
-    *Back-of-the-Envelope estimation*
+    **Back-of-the-Envelope estimation**
     Para estimar a capacidade e desempenho do sistema e entender quais serao os requisitos(vazao e armazenamento) a serem atendidos
 
     `Exemplo do Twitter para estimar`
 
 
-  2. *Problemas na escalabilidade geografica*
+  2. **Problemas na escalabilidade geografica**
     escalabilidade geográfica: Distância máxima entre nós
 
   * Não é possível só ir da LAN para WAN: muitos dos sistemas distribuídos assumem interações cliente-servidor com latências pequenas. WAN: tempos sao longos
   * Links das WAN são pouco confiáveis: e.g.mover dados de streaming de vídeo da LAN para WAN falhará.
-  * O *broadcast*(LAN) da camada de rede não pode ser aplicado na WAN.
+  * O **broadcast**(LAN) da camada de rede não pode ser aplicado na WAN.
 
 
-  3. *Problemas na escalabilidade administrativa*
+  3. **Problemas na escalabilidade administrativa**
    escalabilidade administrativa: Número de domínios administrativos
    * Políticas conflitantes a respeito do uso (e pagamento), gerenciamento e segurança.
    * Exemplos:
@@ -196,15 +196,15 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
      * Processamento de informações em diferentes lugares de forma confidencial.
      * Onde armazenar e para quem disponibilizar os dados mantendo políticas como LGPD.
 
-2. *Tecnicas de Escalabilidade*
+2. **Tecnicas de Escalabilidade**
    Ideia geral: esconder latencia de comunicacao
 
-   *a.* <u>Nao fique esperando por respostas, faça outra coisa</u>
+   **a.** <u>Nao fique esperando por respostas, faça outra coisa</u>
     - use comunicacao _assincrona_ -> nao confundir modelo assincrono
     - use diferentes handlers para tratamento de mensagens(_multithread_)
     - `Problema`: nem toda aplicacao se encaixa nesse modelo
 
-    *b.* <u>Particionamento de dados e computação em muitas máquinas</u>
+    **b.** <u>Particionamento de dados e computação em muitas máquinas</u>
     - Mova a computação para os clientes (ex: Javascript, Spark, etc.) Exemplo formulario verificacao do email, CPF feito no cliente, reduzindo o uso da CPU no servidor.
     - Serviços de nomes decentralizados (DNS) -  nome em endereco IP
     - Sistemas de informação decentralizados (WWW)
@@ -212,7 +212,7 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
     - Sharding (particionamento) de tabelas de bancos de dados ou de objetos DIFERENTE de replicacao/caching
     - `Escalabilidade Vertical/Horizontal(Scale-in/Scale-out)`
 
-    *c.* <u>Replicacao/caching</u>
+    **c.** <u>Replicacao/caching</u>
     Faça cópias dos dados e disponibilize-as em diferentes máquinas:
     - Bancos de dados e sistemas de arquivos replicados
     - Sites web “espelhados” - mesmo site em 2 maquinas
@@ -221,10 +221,10 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
     - Cache de dados(nos servidores – memcached)
 
 
-3. *Problemas Escalabilidade*
+3. **Problemas Escalabilidade**
 Aplicar técnicas para obtenção de escalabilidade é fácil, exceto por:
-* Manter múltiplas cópias (em cache ou replicadas) leva a *inconsistências*: a modificação em uma cópia a torna diferente das demais durante um tempo
-* Manter as cópias consistentes requer *sincronização global* em cada modificação (mas não há um relógio global)
+* Manter múltiplas cópias (em cache ou replicadas) leva a **inconsistências**: a modificação em uma cópia a torna diferente das demais durante um tempo
+* Manter as cópias consistentes requer* *sincronização global** em cada modificação (mas não há um relógio global)
 * Porem Sincronização global impossibilita soluções escaláveis
 
 
@@ -234,24 +234,24 @@ Porem, se pudermos tolerar inconsistências, poderíamos reduzir a dependência 
 
 Não confundir com comunicação síncrona e assíncrona entre cliente-servidor.
 
-1. Sincrono
+1. **Sincrono**
 - Os limites de tempo para transferir uma mensagem são conhecidos
 - Os limites de tempo para processar uma ação são conhecidos
-`LAN/Datacenters`
+- `LAN/Datacenters`
 
-2. Assincrono
+2. **Assincrono**
 - Sem limites de tempo para transferir uma mensagem
 - Sem limites de tempo para processar uma ação
-`Internet`
+- `Internet`
 
-3. Parcialmente sincrono
+3. **Parcialmente sincrono**
 - Inicialmente o comportamento do sistema é assíncrono
 - Eventualmente (sim ou sim) o comportamento será síncrono 
 - `Internet`
 
 
 #### Armadilhas no desenvolvimento de SDs
-Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa de “consertos” ao longo do tempo. Em geral, há muitas *hipóteses falsas*/nao presta atencao
+Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa de “consertos” ao longo do tempo. Em geral, há muitas **hipóteses falsas**/nao presta atencao
 - A rede é confiável
 - A rede é segura
 - A rede é homogênea
@@ -264,13 +264,14 @@ Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa d
 #### Tipos de Sistemas Distribuidos
 
 *Sistemas para computação distribuída de alto desempenho*
-*a.* Cluster Computing (Aglomerados de computacao)
+
+**a.** Cluster Computing (Aglomerados de computacao)      
 Essencialmente um grupo de computadores de boa qualidade conectados via LAN, rede local.
   * Homogêneo: mesmo SO, hardware quase idêntico
   * Um unico node gerenciador do cluster(master node)
 
 
-*b.* Grade
+**b.** Grade    
 O próximo passo: vários nós vindos de todos os cantos.
   * Heterogeneos: diferente hardware, diferente SO
   * Espalhados entre diversas organizacoes ou pessoas/lugares
@@ -278,7 +279,7 @@ O próximo passo: vários nós vindos de todos os cantos.
   * Obs: Para permitir colaborações, grades normalmente usam _organizações virtuais_. Essencialmente, isso significa que os usuários (ou melhor, seus IDs) são organizados em grupos que possuem autorização para usar alguns recursos.
   ********[Imagem da arquitetura] - CAMADAS********
 
-*c.* Computacao em Nuvem
+**c.** Computacao em Nuvem
 -> Mistura de SD(grade, cluster), encapsula varios servidores virtuais que rodam por cima de infraestruturas reais. Cliente para acessar a nuvem usa o conceito de transparencia
 
 * IaaS: cobre as camadas de hardware (escondida do cliente) e infraestrutura. 
@@ -296,21 +297,21 @@ Faz uma distincao entre quatro camadas
 Uma quantidade enorme de sistemas em uso hoje em dia são formas de sistemas de informação tradicionais.
 Geralmente são aplicações que se conectam à rede para intercambiar informações.
 
-As palavras-chave que caracterizam os sistemas de informação distribuído são *transação* e *integração*. Sistemas transacionais que precisam ser integrados com outros nodes para compartilhar informacoes.
+As palavras-chave que caracterizam os sistemas de informação distribuído são **transação** e **integração**. Sistemas transacionais que precisam ser integrados com outros nodes para compartilhar informacoes.
 
 Nota: Transações formam uma <u>operação atômica</u>. Se cair em qualquer lugar: ABORT_TRANSACTION. Por exemplo venda casada hotel + passagem, se o hotel tem um banco de dados e passagem outro, e as informacoes nao tem integridade nas transacoes, ou seja nao batem, abortaria a transacao e retiraria de ambos os banco de dados.
 
-*Transações*
+**Transações**
 Uma transação é um conjunto de operações sobre o estado de um objeto (banco de dados, composição de objetos, etc.) que satisfazem as seguintes propriedades (ACID):
-`Atomicidade` ou todas as operações são bem sucedidas, ou todas falham. Quando uma transação falha, o estado do objeto permanecerá inalterado. Depende do Framework ou sistema de gerenciamento do banco de dados.
-`Consistência` uma transação estabelece um estado de transição válido. Isto não exclui a existência de estados intermediários inválidos durante sua execução. Transacoes entre bancos, enquanto ta enviando um dinheiro, esse dinheiro esta invalido, ate ser processada a transacao. Depende do programador.
-`Isolamento` transações concorrentes não interferem entre si. Para uma transação T é como se as outrast ransações ocorressem ou antes de T, ou depois de T. Depende do Framework ou sistema de gerenciamento do banco de dados.
-`Durabilidade` Após o término de uma transação, seus efeitos são permanentes: mudanças de estado sobrevivem a falhas. Depende do Framework ou sistema de gerenciamento do banco de dados.
+- `Atomicidade` ou todas as operações são bem sucedidas, ou todas falham. Quando uma transação falha, o estado do objeto permanecerá inalterado. Depende do Framework ou sistema de gerenciamento do banco de dados.
+- `Consistência` uma transação estabelece um estado de transição válido. Isto não exclui a existência de estados intermediários inválidos durante sua execução. Transacoes entre bancos, enquanto ta enviando um dinheiro, esse dinheiro esta invalido, ate ser processada a transacao. Depende do programador.
+- `Isolamento` transações concorrentes não interferem entre si. Para uma transação T é como se as outrast ransações ocorressem ou antes de T, ou depois de T. Depende do Framework ou sistema de gerenciamento do banco de dados.
+- `Durabilidade` Após o término de uma transação, seus efeitos são permanentes: mudanças de estado sobrevivem a falhas. Depende do Framework ou sistema de gerenciamento do banco de dados.
 
 Tendo em vista isso como deveria ser feito o *ACID* em sistemas distribuidos?
 
 _Monitor de Processamento de Transações_
-Em muitos casos, o conjunto de dados envolvidos em uma transação está distribuídoemváriosservidores.Um `TP Monitor ` é responsável por _coordenar a execução de uma transação._
+Em muitos casos, o conjunto de dados envolvidos em uma transação está distribuído em vários servidores. Um `TP Monitor ` é responsável por _coordenar a execução de uma transação._
 
 Imagine um cliente que quer usar um modelo transacional, uma transacao com varios outros servidores banco de dados. TP monitor, realmente monitora as requests.
 
@@ -318,17 +319,17 @@ Imagine um cliente que quer usar um modelo transacional, uma transacao com vario
 
 Esses servidores podem ser aplicacoes de diferentes empresas, por exemplop hotel e passagem
 
-*Integracao de aplicacoes corporativas:*
+**Integracao de aplicacoes corporativas:**
 Situacao: as organizacoes possuem diversas aplicacoes muitas delas sem interoperabilidade.
 
 A solucao basica para isso seria o monitor comentado acima, que combinaria as requisicoes das aplicacoes em um servidor, quem realizara o envio e coleta das respostas, apresentando um resultado coerente para o cliente.
 
-Mas as vezes precisamos fazer comunicacao diretas, sem um intermediario -> *Enterprise Application Integration* == MIDDLEWARE de comunicacao. Permitindo nao somenta a comunicacao de um cliente com os servidores, mas cliente entre cliente atraves do middleware. Exemplo: RPC, MOM(Middleware orientado a mensagens)
+Mas as vezes precisamos fazer comunicacao diretas, sem um intermediario -> **Enterprise Application Integration** == MIDDLEWARE de comunicacao. Permitindo nao somenta a comunicacao de um cliente com os servidores, mas cliente entre cliente atraves do middleware. Exemplo: RPC, MOM(Middleware orientado a mensagens)
 
 <u>Como integrar as apps?</u>
 
 * Transferencia de arquivos: simples mas nao flexivel. Pode ter problema de consistencia, precisaria conhecer o formato do arquivo, propagacao e notificacoes de atualizacao.
-* Banco de dados: bem mais flexivel, porem requer quehaja um schema comum com riscos de gargalho.
+* Banco de dados: bem mais flexivel, porem requer que haja um schema comum com riscos de gargalo.
 * RPC: efetivo quando a execucao das acoes sao distribuidas, estando o requisitante e o requisitado online. Chamando o metodo diretamente, reutilizando o modelo de negocio.
 ********[IMAGEM RPC] - CAMADAS********
 
@@ -342,7 +343,7 @@ Tendência em sistemas distribuídos; _nós são pequenos, móveis e normalmente
 
 Três tipos (com sobreposição, pode ter misturas), por exemplo o celular se encaixa nos 3 tipos:
 1. <u>Sistemas ubíquos: continuamente presentes</u>
-   *Requisitos:*
+   **Requisitos:**
    -  `Mudança contextual`: o sistema é parte de um ambiente onde mudanças devem ser rapidamente levadas em consideração
    - `Composição ad hoc`: cada nó pode ser usado em diferentes maneiras, por diferentes usuários. Deve ser facilmente configurável.
    - `Compartilhar é o padrão`: nós vão e vêm, fornecendo serviços e informação compartilháveis. Pede simplicidade.
@@ -353,7 +354,7 @@ Três tipos (com sobreposição, pode ter misturas), por exemplo o celular se en
 2. <u>Sistemas móveis: inerentemente móvel</u>
 Miríade de dispositivos móveis: smartphones, tablets, óculos AR/VR, etc.
 
-*Caracteristicas*
+**Caracteristicas**
 - Comunicacao sem fio
 - Mobilidade implica em que a localizacao do dispositivo mudara no tempo. DESCOBERTA
 - A comunicacao pode ser dificil, pois nao ha uma rota estavel. Leva as redes tolerantes e disrupcoes
@@ -361,10 +362,11 @@ Miríade de dispositivos móveis: smartphones, tablets, óculos AR/VR, etc.
 ******video padroes de mobilidade slide 71***********
 Existe algum relacionamento entre a disseminacao da informacao e a mobilidade das pessoa?
 Ideia basica: posso fazer intercambio de informacoes por meio de enconstro(Pocket switched networks)
+[?]
 
 3. <u>Sistemas de sensores: sente e atúa no ambiente.</u>
 
-*Caracteristicas redes de sensores*
+**Caracteristicas redes de sensores**
 - Os nodes aos quais os sensores estao presos sao:
   - Muitos sensores(10s - 1000s)
   - Simples(Pouca capacidade de memoria/computacao/comunicacao)
