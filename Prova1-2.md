@@ -269,7 +269,7 @@ Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa d
 Essencialmente um grupo de computadores de boa qualidade conectados via LAN, rede local.
   * Homogêneo: mesmo SO, hardware quase idêntico
   * Um unico node gerenciador do cluster(master node)
-![Cluster Computing](URL da imagem)
+![Cluster Computing](https://github.com/viborotto/distributed-system-concepts/blob/main/imagens/RPC.png)
 
 **b.** Grade    
 O próximo passo: vários nós vindos de todos os cantos.
@@ -281,7 +281,7 @@ O próximo passo: vários nós vindos de todos os cantos.
 
 **c.** Computacao em Nuvem
 -> Mistura de SD(grade, cluster), encapsula varios servidores virtuais que rodam por cima de infraestruturas reais. Cliente para acessar a nuvem usa o conceito de transparencia
-
+![Cloud Computing](imagens/CloudCompute.png)
 * IaaS: cobre as camadas de hardware (escondida do cliente) e infraestrutura. 
 * PaaS: cobre a camada de plataforma.
 * SaaS: cobre a camada de aplicação.
