@@ -87,12 +87,76 @@ Node N #node, thread, ou processo
 
 ### Resolucao de Nomes Iterativa [Montar de acordo com slides]
 
-```python
+```java
+Cliente {
+    Diretorio resolveNome(Diretorio dir, ListaNomes nomes) {
+        EnderecoServidor enderecoAtual = EnderecoServidor(Server0)
+
+        para cada nome em nomes {
+            enderecoAtual = enviarRequisicao(enderecoAtual, dir, nome)
+            dir = buscarDiretorio(enderecoAtual)
+        }
+
+        retornar dir
+    }
+
+    EnderecoServidor enviarRequisicao(EnderecoServidor endereco, Diretorio dir, Nome nome) {
+        Requisicao req = criarRequisicao(dir, nome)
+        EnderecoServidor novoEndereco = enviarParaServidor(endereco, req)
+        retornar novoEndereco
+    }
+
+    Diretorio buscarDiretorio(EnderecoServidor endereco) {
+        // Realizar busca no servidor para obter o diretório associado ao endereço
+    }
+}
+
+Servidor {
+    Map<Diretorio, EnderecoServidor> tabelaDiretorios
+
+    EnderecoServidor processarRequisicao(Requisicao req) {
+        Diretorio dir = req.diretorio
+        EnderecoServidor endereco = tabelaDiretorios[dir]
+        retornar endereco
+    }
+}
 ```
 
 
 ### Resolucao de Nomes Recursiva [Montar de acordo com slides]
-```python
+```java
+Cliente {
+    Diretorio resolveNome(Diretorio dir, ListaNomes nomes) {
+        Diretorio resultado = enviarRequisicaoRecursiva(Server0, dir, nomes)
+        retornar resultado
+    }
+
+    Diretorio enviarRequisicaoRecursiva(EnderecoServidor endereco, Diretorio dir, ListaNomes nomes) {
+        if (nomes.vazia()) {
+            retornar dir
+        } else {
+            Nome proximoNome = nomes.removerPrimeiro()
+            Requisicao req = criarRequisicao(dir, proximoNome)
+            Diretorio dir1 = enviarParaServidor(endereco, req)
+            EnderecoServidor proximoEndereco = obterEnderecoServidor(dir1)
+            retornar enviarRequisicaoRecursiva(proximoEndereco, dir1, nomes)
+        }
+    }
+
+    Diretorio obterEnderecoServidor(Diretorio dir) {
+        // Realizar busca no servidor para obter o endereço associado ao diretório
+    }
+}
+
+Servidor {
+    Map<Diretorio, EnderecoServidor> tabelaDiretorios
+
+    Diretorio processarRequisicao(Requisicao req) {
+        Diretorio dir = req.diretorio
+        EnderecoServidor endereco = tabelaDiretorios[dir]
+        retornar endereco
+    }
+}
 ```
 
 ## DHT Chord
@@ -183,7 +247,7 @@ No {
 
 ## Capitulo 6
 
-### Exclusao Mutua [?INCOMPLETO]
+### Exclusao Mutua [INCOMPLETO]
 
 ```java
 No {
@@ -196,13 +260,15 @@ No {
 
 No join(Q){
     id = Q.id
-    findSucessor(Q.id,No)
+    findSucessor(Q.id,this)
+    AtualizarFingerTable() // Chame a função de atualização da Finger Table
 }
 
 No response(Node){
     if OP == Join
-    Node.Join(Q)
+    Node.Join(this)
     Atualizar finger table
+    AtualizarFingerTable()
 }
 ```
 
@@ -235,5 +301,82 @@ S release(C){
 }
 ```
 
-### Acesso RPC: Pseudocodigo [?]
-### Relogio [?]
+### Acesso RPC: Pseudocodigo [CHATGPT]
+
+```java
+Servidor {
+    Map<String, Funcao> tabelaDeFuncoes // Tabela de funções disponíveis no servidor
+
+    void registrarFuncao(nome, funcao) {
+        tabelaDeFuncoes[nome] = funcao
+    }
+
+    RespostaRPC processarChamada(RPCRequest request) {
+        String nomeFuncao = request.nomeFuncao
+        if (tabelaDeFuncoes.contem(nomeFuncao)) {
+            Funcao funcao = tabelaDeFuncoes[nomeFuncao]
+            return funcao.executar(request.argumentos)
+        } else {
+            return RespostaRPC(erro)
+        }
+    }
+}
+
+Cliente {
+    RespostaRPC chamarFuncaoRemota(nomeFuncao, argumentos) {
+        RPCRequest request = RPCRequest(nomeFuncao, argumentos)
+        Conexao conexao = estabelecerConexaoComServidor()
+        conexao.enviar(request)
+        RespostaRPC resposta = conexao.receberResposta()
+        conexao.fechar()
+        return resposta
+    }
+}
+
+RPCRequest {
+    String nomeFuncao
+    Argumentos argumentos
+}
+
+RespostaRPC {
+    Status status
+    Resultado resultado
+}
+```
+
+
+### Relogio Logico Lamport [?]
+
+```java
+Processo {
+    int contadorLocal
+
+    // Quando ocorre um evento
+    eventoOcorreu() {
+        contadorLocal = contadorLocal + 1
+    }
+
+    // Quando uma mensagem é enviada
+    enviarMensagem(mensagem) {
+        mensagem.timestamp = contadorLocal
+        enviar(mensagem)
+    }
+
+    // Quando uma mensagem é recebida
+    receberMensagem(mensagem) {
+        contadorLocal = max(contadorLocal, mensagem.timestamp) + 1
+        eventoOcorreu()
+        repassarMensagem(mensagem)
+    }
+}
+
+// Exemplo de uso
+Processo P1, P2
+
+// Evento ocorre em P1
+P1.eventoOcorreu()
+P1.enviarMensagem(mensagem)
+P2.receberMensagem(mensagem)
+
+```
+
