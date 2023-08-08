@@ -250,19 +250,38 @@ Podemos adicionar uma regra simples de priorização entre os processos. A ideia
 ## Exercicios Capitulo 7
 
 9. **Que tipo de consistencia vc usaria para implementar um mercado eletronico de acoes? Explique.**        
-
+Eu escolheria a consistência sequencial, devido ao fato de que todas as transações são processadas em ordem sequencial, garantindo que qualquer leitura subsequente após uma escrita refletirá a atualização mais recente dos dados. A consistência sequencial pode ser vantajosa em um mercado de ações, pois garante que os preços e as ordens de negociação sejam refletidos na mesma sequência em que foram executados, evitando problemas de inconsistências na ordem das transações
 
 10.  **Considere uma caixa postal pessoal para um usuario movel, implementada como parte de um BD distribuido de longa distancia. Que tipo de consistencia centrada no cliente seria mais adequado?**       
-
+Consistência eventual, pois é uma forma de consistência que permite que diferentes réplicas de dados tenham visões temporariamente inconsistentes, mas com o tempo, todas as réplicas convergirão para um estado consistente. Nesse cenário, a "Consistência Eventual" permite que a caixa postal pessoal seja acessada mesmo em situações de conectividade intermitente ou redes instáveis. Os dados podem ser atualizados localmente no dispositivo do usuário e, posteriormente, sincronizados com o banco de dados distribuído quando houver conexão com a rede. Isso evita bloqueios e permite que o usuário leia e escreva mensagens em sua caixa postal mesmo quando estiver offline.
 
 11.  **Descreva uma implementacao simples de consistencia leia-suas-escritas para apresentar paginas Web que acabaram de ser atualizadas.**
+Para implementar em uma aplicação web para apresentar páginas que foram atualizadas basta seguir alguns passos:
+- Identificar o usuário:Identificar o usuário que está fazendo a requisição ao servidor para apresentar a página(login e senha, ou tokens de sessão)
+- Timestamp: Qualquer alteração feita pelo usuário tem que registrar um timestamp dessa modificação dos dados.
+- Armazenamento do timestamp: O servidor deve armazenar o timestamp da última atualização realizada pelo usuário, associando à seu identificador.
+- Requisições subsequentes: Sempre que o mesmo usuário fizer uma requisição para visualizar a página que foi atualizada, o servidor deve verificar o timestamp da última atualização feita pelo usuário e enviar a versão mais recente da página para o cliente.
 
 
 13.  **Quando usa um leasing, é necessario que os relogios de um cliente e do servidor respectivamente, estejam fortemente sincronizados?**
-
+Não, porém ter uma sincronização razoável dos relógios pode ajudar a melhorar a eficiência e a precisão do mecanismo de leasing. Protocolos de sincronização de tempo e outras técnicas podem ser utilizadas para garantir uma sincronização adequada, evitando problemas de atrasos e inconsistências nos períodos de leasing.
 
 19.  **Para implementar multicast totalmente ordenado por meio de um sequenciador, uma abordagem seria primeiro repassar uma operacao ao sequenciador, que entao lhe designaria um numero exclusivo e na sequencia, faria multicast da operacao. Cite duas abordagens alternativas e compare as tres solucoes.**
+Outras duas abordagens alternativas seriam Multicast com relógios vetoriais e Multicast com acordos de ordem. Comparando as três soluções temos vantagens e desvatangens.
+* Abordagem com sequenciador:
+  - Vantagens: É uma solução simples e direta. O sequenciador garante a ordem total das mensagens, tornando a implementação mais fácil de ser compreendida.
+  - Desvantagens: O sequenciador pode ser um ponto de falha e gargalo no sistema, já que todas as mensagens precisam passar por ele. Além disso, a escalabilidade pode ser um problema, pois o sequenciador pode se tornar um ponto de estrangulamento à medida que o número de processos aumenta.
+* Multicast com relógios vetoriais:
+  - Vantagens: A abordagem com relógios vetoriais não requer um ponto central de coordenação, o que melhora a escalabilidade em comparação com a abordagem do sequenciador.
+  - Desvantagens: A implementação com relógios vetoriais pode ser mais complexa do que a do sequenciador. Além disso, é necessário garantir que os carimbos de tempo vetoriais sejam consistentemente atualizados e distribuídos para todos os processos.
+* Multicast com acordos de ordem:
+  - Vantagens: Essa abordagem distribuída não requer um ponto central de coordenação e pode ser escalável em um grande número de processos.
+  - Desvantagens: Algoritmos de consenso, como o Paxos, podem ser complexos e difíceis de implementar corretamente. Além disso, eles podem envolver múltiplas rodadas de comunicação entre os processos, o que pode aumentar a latência.
 
 
-20.  **Um arquivo é replicado em 10 servidores. Faca uma lista de todas as combinacoes de quorum de leitura e quorum de escrita que sao permitidas pelo algoritmo de votacao**
+20.   **Um arquivo é replicado em 10 servidores. Faca uma lista de todas as combinacoes de quorum de leitura e quorum de escrita que sao permitidas pelo algoritmo de votacao**
+Dado que temos dez servidores replicados, podemos usar os números de 1 a 10 para representar o número de réplicas no quórum de leitura e de escrita.
+[Tabela]
+Total: 110 combinações possíveis de quórum de leitura e quórum de escrita para um sistema com dez servidores replicados.
+
 
