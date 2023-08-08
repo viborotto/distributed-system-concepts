@@ -189,14 +189,14 @@ A primeira URL é independente de localizacao no sentido de que ele identifica u
 Sim por exemplo em URL contem informacoes sobre localizacao e tipo de recurso, protocolo(http), dominio, nome do arquivo.
 
 5. **Observe o sistema Chord como mostra a figura 5.4 e considere que o node 7 acabou de se juntar a rede. Qual seria sua tabela de derivacao? Haveria quaisquer mudancas em outras tabelas de derivacao?**       
-![Figura 5.4](imagens/figura5.4.png)
-Considerando que os Finger Tables(tabela de derivacao) apontam para o sucessor, e que FTp[i] = succ(p + 2^i-1)
-Temos que:
-FT7[1] = succ(7 + 2^1-1) = succ(8) = 9
-FT7[2] = succ(7 + 2^2-1) = succ(9) = 11
-FT7[3] = succ(7 + 2^3-1) = succ(11) = 14
-FT7[4] = succ(7 + 2^4-1) = succ(15) = 18
-FT7[5] = succ(7 + 2^5-1) = succ(23) = 28
+![Figura 5.4](imagens/figura5.4.png)      
+Considerando que os Finger Tables(tabela de derivacao) apontam para o sucessor, e que FTp[i] = succ(p + 2^i-1)      
+Temos que:      
+FT7[1] = succ(7 + 2^1-1) = succ(8) = 9      
+FT7[2] = succ(7 + 2^2-1) = succ(9) = 11    
+FT7[3] = succ(7 + 2^3-1) = succ(11) = 14      
+FT7[4] = succ(7 + 2^4-1) = succ(15) = 18    
+FT7[5] = succ(7 + 2^5-1) = succ(23) = 28    
 
 i   | -
 --- | ---
