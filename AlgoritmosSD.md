@@ -85,13 +85,13 @@ Node N #node, thread, ou processo
 
 ## Capitulo 5
 
-### Resolucao de Nomes Iterativa
+### Resolucao de Nomes Iterativa [Montar de acordo com slides]
 
 ```python
 ```
 
 
-### Resolucao de Nomes Recursiva
+### Resolucao de Nomes Recursiva [Montar de acordo com slides]
 ```python
 ```
 
@@ -183,7 +183,7 @@ No {
 
 ## Capitulo 6
 
-### Exclusao Mutua
+### Exclusao Mutua [?INCOMPLETO]
 
 ```java
 No {
@@ -235,5 +235,5 @@ S release(C){
 }
 ```
 
-### Acesso RPC: Pseudocodigo
+### Acesso RPC: Pseudocodigo [?]
 ### Relogio [?]
