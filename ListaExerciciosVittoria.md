@@ -188,25 +188,43 @@ A primeira URL é independente de localizacao no sentido de que ele identifica u
 4. **Um identificador tem permissao de conter informacoes sobre a entidade que ele referencia?**      
 Sim por exemplo em URL contem informacoes sobre localizacao e tipo de recurso, protocolo(http), dominio, nome do arquivo.
 
-6. **Observe o sistema Chord como mostra a figura 5.4 e considere que o node 7 acabou de se juntar a rede. Qual seria sua tabela de derivacao? Haveria quaisquer mudancas em outras tabelas de derivacao?**       
+5. **Observe o sistema Chord como mostra a figura 5.4 e considere que o node 7 acabou de se juntar a rede. Qual seria sua tabela de derivacao? Haveria quaisquer mudancas em outras tabelas de derivacao?**       
 ![Figura 5.4](imagens/figura5.4.png)
-[?]
+Considerando que os Finger Tables(tabela de derivacao) apontam para o sucessor, e que FTp[i] = succ(p + 2^i-1)
+Temos que:
+FT7[1] = succ(7 + 2^1-1) = succ(8) = 9
+FT7[2] = succ(7 + 2^2-1) = succ(9) = 11
+FT7[3] = succ(7 + 2^3-1) = succ(11) = 14
+FT7[4] = succ(7 + 2^4-1) = succ(15) = 18
+FT7[5] = succ(7 + 2^5-1) = succ(23) = 28
 
-7. **Considere um sistema Chorde baseado em DHT no qual k bits de um espaco de identificadores de m bits foram reservados para designar a superpares. Se os identificadores forem designados aleatoriamentem, quantos super pares podemos esperar que um sistema de N nodes tenha?**      
-[?]
+i   | -
+--- | ---
+1 | 9
+2 | 11
+3 | 14
+4 | 18
+5 | 28
+- Ao adicionar o nó 7 ao anel Chord, os nós cujas finger tables precisariam ser atualizadas são aqueles que têm entradas em suas finger tables que apontam para intervalos que incluem o nó 7. Isso garantirá que os nós tenham as informações corretas sobre os responsáveis pelos intervalos de chaves no anel.
 
-8. **Se inserirmos um node em um sistema Chord, precisaremos atualizar imediatamente todas as tabelas de derivacao?**     
+6. **Considere um sistema Chord baseado em DHT no qual k bits de um espaco de identificadores de m bits foram reservados para designar a superpares. Se os identificadores forem designados aleatoriamentem, quantos super pares podemos esperar que um sistema de N nodes tenha?**      
+Podemos calcular o número esperado de superpares da seguinte maneira:
+- A probabilidade de um nó específico ser um superpar é 2^(-k), pois há 2^k possíveis combinações de k bits para designar um superpar em um espaço de identificadores de m bits. 
+  - Número Esperado de Superpares = N * Probabilidade de ser um Superpar
+  - **Número Esperado de Superpares = N * 2^(-k)**
+
+7. **Se inserirmos um node em um sistema Chord, precisaremos atualizar imediatamente todas as tabelas de derivacao?**     
 Não é necessário atualizar imediatamente todas as tabelas de derivacão ao inserir um nó em um sistema Chord. Apenas o nó sucessor imediato precisa ser atualizado. Os nós restantes serão atualizados gradualmente à medida que as consultas são feitas, seguindo o algoritmo de roteamento do Chord. Isso minimiza o impacto sobre a estabilidade da rede e a sobrecarga de atualizações em massa.
 
-9. **Qual é a maior desvantagem de consultas recursivas na resolucao de uma chave em um sistema baseado em DHT?**       
+8. **Qual é a maior desvantagem de consultas recursivas na resolucao de uma chave em um sistema baseado em DHT?**       
 A maior desvantagem é a sobrecarga de latencia e complexidade do processo. Quando uma consulta recursiva é realizada, cada nó na rota de resolução deve ser consultado sequencialmente, o que pode resultar em uma série de mensagens trocadas entre os nós até que a chave seja encontrada. Isso pode introduzir um atraso significativo, especialmente em redes grandes ou congestionadas.
 - Para mitigar esses problemas, muitos sistemas DHT adotam abordagens de roteamento baseadas em consultas diretas (lookup) ou técnicas de encaminhamento mais eficientes, como roteamento baseado em saltos (chordal hops), o que ajuda a reduzir a latência e minimizar a sobrecarga de mensagens na rede.
 
-18.  **Servidores de nomes de nivel alto em DNS, isto é, servidores de nomes que implementam nodes no espaco de nomes DNS que esta proximo da raiz, em geral nao suportam resolucao recursiva de nomes. Poderiamos esperar grande aprimoramento de desempenho caso suportassem?**      
+18.    **Servidores de nomes de nivel alto em DNS, isto é, servidores de nomes que implementam nodes no espaco de nomes DNS que esta proximo da raiz, em geral nao suportam resolucao recursiva de nomes. Poderiamos esperar grande aprimoramento de desempenho caso suportassem?**      
 Se os servidores de nomes de nível alto pudessem fornecer resolução recursiva, eles seriam capazes de realizar todo o processo de consulta e resolução internamente, sem a necessidade de várias etapas de consultas iterativas. Isso reduziria significativamente a latência da consulta, uma vez que o cliente receberia a resposta completa diretamente do servidor de nível alto, em vez de precisar consultar vários servidores intermediários.
 - No entanto, a implementação da resolução recursiva em servidores de nomes de nível alto também pode introduzir desafios de escalabilidade e sobrecarga, pois esses servidores já lidam com um grande volume de consultas. Portanto, aprimoramentos de desempenho devem ser equilibrados com considerações de escalabilidade e recursos do servidor.
 
-19. **Explique como o DNS pode ser usado para implementar uma abordagem baseada em localizacao nativa para localizar hospedeiros moveis.**       
+19.   **Explique como o DNS pode ser usado para implementar uma abordagem baseada em localizacao nativa para localizar hospedeiros moveis.**       
 - Registros de Localização (LOC): Esses registros fornecem informações geográficas, como latitude, longitude e altitude, associadas a um nome de domínio. Os dispositivos móveis podem atualizar periodicamente esses registros à medida que se movem para novas localizações, permitindo que os serviços e aplicativos obtenham informações de localização atualizadas.
 - Registros de Serviço (SRV): Os registros SRV podem ser usados para associar um serviço específico, como um serviço de localização, a um nome de domínio. Os dispositivos móveis podem registrar seus serviços de localização no DNS à medida que se movem entre redes.
 
