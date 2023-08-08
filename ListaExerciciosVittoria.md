@@ -245,3 +245,24 @@ Podemos adicionar uma regra simples de priorização entre os processos. A ideia
   - O processo que recebe a mensagem de ELEIÇÃO compara o ID do processo que iniciou a eleição com o seu próprio ID. Se o ID do processo atual for maior do que o ID do processo que iniciou a eleição, ele se absterá de iniciar uma nova eleição.
   - Se o ID do processo atual for menor do que o ID do processo que iniciou a eleição, o processo responde enviando uma mensagem de OK para indicar que está vivo e ativo.
   - A mensagem de ELEIÇÃO continua circulando no anel até encontrar um processo com ID maior. Quando um processo com um ID maior recebe a mensagem de ELEIÇÃO, ele inicia uma nova eleição e repete o processo.
+
+
+## Exercicios Capitulo 7
+
+9. **Que tipo de consistencia vc usaria para implementar um mercado eletronico de acoes? Explique.**        
+
+
+10.  **Considere uma caixa postal pessoal para um usuario movel, implementada como parte de um BD distribuido de longa distancia. Que tipo de consistencia centrada no cliente seria mais adequado?**       
+
+
+11.  **Descreva uma implementacao simples de consistencia leia-suas-escritas para apresentar paginas Web que acabaram de ser atualizadas.**
+
+
+13.  **Quando usa um leasing, é necessario que os relogios de um cliente e do servidor respectivamente, estejam fortemente sincronizados?**
+
+
+19.  **Para implementar multicast totalmente ordenado por meio de um sequenciador, uma abordagem seria primeiro repassar uma operacao ao sequenciador, que entao lhe designaria um numero exclusivo e na sequencia, faria multicast da operacao. Cite duas abordagens alternativas e compare as tres solucoes.**
+
+
+20.  **Um arquivo é replicado em 10 servidores. Faca uma lista de todas as combinacoes de quorum de leitura e quorum de escrita que sao permitidas pelo algoritmo de votacao**
+
