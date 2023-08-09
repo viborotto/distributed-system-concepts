@@ -22,14 +22,14 @@
 
 
 ### Introducao a processos e threads
-*Processo*: uma das abstracoes mais importantes de um SO; 
+**Processo**: uma das abstracoes mais importantes de um SO; 
 - representam a execucao de um programa; 
 - composto por: IP, codigo, heap, stack, files, interrupt routines.
 - execucoes simultaneas de um programa sao representadas por diversos processos
 - por seguranca: os `espacos de memoria` de cada processo sao `isolados` -> evitando problemas que seriam causados por ataques deliberados ou por bugs
 - Cada processo é uma linha de execucao independente gerenciada pelo SO
 
-*Threads*: frequentemente um mesmo processo precisa fazer mais de uma coisa por vez. Exemplo: navegador de Internet
+**Threads**: frequentemente um mesmo processo precisa fazer mais de uma coisa por vez. Exemplo: navegador de Internet
 - da mesma maneira que processo fornecem multiplas linhas de execucao em uma maquina, threads permitem _multiplas linhas de execucao em um só processo_.
 - Como todas as threads estao no mesmo processo, todas tem acesso ao mesmo espaco de memoria e a todos os recursos disponiveis no processo.
 
@@ -48,25 +48,25 @@ Razoes para utilizar varias threads:
 - Evita troca de contextos entre processos: leva a programacao concorrente com memoria compartilhada(feita pelo programador)
 
 #### Threads no Cliente
-*Clientes web multithreaded - escondem latencia da rede:*
+**Clientes web multithreaded - escondem latencia da rede:**
 - Navegador analisa a pagina HTML sendo recebida e descobre que muitos outros arquivos devem ser baixados. Cada arquivo é baixado por uma thread separada; cada uma realiza um requisicao HTTP(bloqueante). A medida que os arquivos chegam, o navegador os exibem
 
-*Multiplas chamadas requisicao-resposa(RPC) para outras maquinas*
+**Multiplas chamadas requisicao-resposa(RPC) para outras maquinas**
 - Um cliente faz varias chamadas simultaneas, cada uma em uma thread diferente
 - Ele espera ate que todos os resultados tenham chegado
 - Se as chamadas sao servidores diferentes, voce pode ter um speed-up linear
 
 #### Threads no Servidor(dispatcher/worker)
-*Melhorias no desempenho*
+**Melhorias no desempenho**
 - Iniciar uma thread é muito mais barato do que iniciar um novo processo
 - Ter servidores single-threaded impede o uso de sistemas que possuem varios processadores(multi-core), nao tem problema de concorrencia
 - Da mesma maneira que comentamos no cliente: esconda a latencia de rede reagindo a proxima requisicao enquanto a anterior esta enviando sua resposta.
 
-*Melhorias na estrutura*
+**Melhorias na estrutura**
 - a maioria dos servidores faz muita E/S. Usar chamadas bloqueantes simples e bem conhecidas simplifica o programa.
 - programas multithreaded tendem a ser menores e mais faceis de entender, ja que simplificam o fluxo de controle
 
-*Modelo dispatcher/worker*
+**Modelo dispatcher/worker**
 Para tratar melhor usamos esse modelo.
 Basicamente dentro de um processo no servidor, o cliente acessa o programa por meio de uma thread que somente escuta, e somente executa a requisicao em uma outra thread. Ou seja a thread que escuta é o `dispatcher` e as demais que executam a requisicao sao os `workers`.
 
@@ -93,27 +93,27 @@ Modelo basico: um processo que implementa um servico especifico em nome de uma c
 - Processo que espera a requisicao do cliente, garante que a requisicao sera tratada e em seguida passa a esperar a proxima requisicao.
 - 2 tipos
 
-*Servidores iterativos*: O servidor trata uma requisicao antes de atender a proxima. Por exemplo 3 clientes acessando o mesmo servidor, requisicoes colocadas em uma fila para tratar uma por uma.
+**Servidores iterativos**: O servidor trata uma requisicao antes de atender a proxima. Por exemplo 3 clientes acessando o mesmo servidor, requisicoes colocadas em uma fila para tratar uma por uma.
 
 
-*Servidores concorrentes*: usa um dispatcher, que pega uma requisicao e passa o seu tratamento para uma thread/processo separado
+**Servidores concorrentes**: usa um dispatcher, que pega uma requisicao e passa o seu tratamento para uma thread/processo separado
 
-> É mais comum encontrarmos *servidores concorrentes*: eles podem tratar multiplas requisicoes mais facilmente, principalmente se for necessario realizar operacoes bloqueantes em discos ou outros servidores
+> É mais comum encontrarmos **servidores concorrentes**: eles podem tratar multiplas requisicoes mais facilmente, principalmente se for necessario realizar operacoes bloqueantes em discos ou outros servidores
 
 Alguns processos bem definidos em portas. por exemplo ssh porta 22
 Cada requisicao a uma porta é atribuida a um processo dinamicamente via superservidor(processo que inicia subprocesso para tratar a requisicao) ou daemos(processos que se registram em uma porta)
 
 -> Assinando dinamemicamente, para acessar o ser vico no servidor:
 
-Cada requisicao a uma porta é atribuida a um processo dinamicamente, via *Daemons*(processos que se registram em uma porta).
+Cada requisicao a uma porta é atribuida a um processo dinamicamente, via **Daemons**(processos que se registram em uma porta).
 Exemplo: cliente quer acessar o servico1 no servidor, servidor registra a porta 8000 de acesso, ai o daemon vai registrar que na porta 8000 vai estar o servico1. Isso somente na primeira vez, pq ai todas as proximas vezes que o cliente acessar o servico1 ja vai ter a porta pra requisitar diretamente.
 
-*Superservidor*
+**Superservidor**
 É diferente do daemon, que no daemon o server precisa estar disponivel antes de qualquer requisicao para registrar. Aqui o servico é levantado de forma dinamica. Porem para levantar pode levar um tempo
 
 #### Stateless e stateful
 
-*Stateless*
+**Stateless**
 Nao mantem informacao exata sobre o status de um cliente apos ter processado uma requisicao.
 Exemplo: pagina inicial sem logar no facebook, somente mostra informacoes genericas.
 - Nao guarda se um arquivo foi aberto(simplesmente fecha-o e abre novamente se necessario)
@@ -128,7 +128,7 @@ O uso de comunicacao orientada a conexao viola o modelo stateless?
 Comunicacao TCP entre cliente e Servidor viola? TCP mantem estado na camada de transporte.
 Resposta: Nao viola, pois ha uma separacao de responsabilidade. Stateless nao mantem estado na camada de aplicacao.
 
-*Stateful*
+**Stateful**
 Servidores guaradm o status de seus clientes. Por exemplo home apos logar no facebook. Informacoes dos seus amigos, e suas informacoes.
 - Regristam quando um arquivo foi aberto para realizacao de prefetching. Por exemplo se um arquivo é muito acessado, ao inves de abrir e fechar toda vez que requisitado, poderia deixar aberto economizando tempo.
 - Sabem quando o cliente possui cache dos dados e permitem que os clientes mantenham copias locais de dados compartilhados.
@@ -137,43 +137,45 @@ Servidores guaradm o status de seus clientes. Por exemplo home apos logar no fac
 #### Aglomerados de servidores: 3 camadas diferentes
 Como colocar tudo isso em varias maquinas? com os conceitos anteriores
 
-Varios clientes, mas vamos focar em um cliente que faz acesso a 1 ou mais maquinas na primeira camada fisica(*first tier*)(podem ser os loadbalancers e o apache) que realizam o dispatcher da requisicao para as maquinas da *second tier*(servidor com um processo que pode executar uma ou mais threads) que podem precisar acessar a *third tier* que seria o banco de dados.
+Varios clientes, mas vamos focar em um cliente que faz acesso a 1 ou mais maquinas na primeira camada fisica(**first tier**)(podem ser os loadbalancers e o apache) que realizam o dispatcher da requisicao para as maquinas da **second tier**(servidor com um processo que pode executar uma ou mais threads) que podem precisar acessar a *third tier* que seria o banco de dados.
+![tiersServers](imagens/tiersServers.png)
 
 *Tratamento de Requisicoes*
-> Ter uma unica camada tratando toda a comunicacao de/para o aglomerado pode levar a criacao de um *gargalo*. Isso acontece porque volta pelo mesmo dispacher ate o cliente novamente
-*Solucao 1* 
+> Ter uma unica camada tratando toda a comunicacao de/para o aglomerado pode levar a criacao de um *gargalo*. Isso acontece porque volta pelo mesmo dispacher ate o cliente novamente   
+
+**Solucao 1**
 - seria usar o *TCP-handoff*: cliente manda requisicao para o dispachter que requisita o servidor mas nesse caso o servidor responde direto para o cliente, sem passar pelo dispatcher novamente. liberando o dispatcher. Mas o cliente espera uma resposta do dispatcher, e para isso o servidor para responder diretamente precisaria modificar o endereco para responder como se fosse o dispatcher, sendo assim fica de maneira transparente o acesso, como se fosse um sistema unico e coerente. Handoff nada mais é que deixar conexoes diferentes como se fosse a mesma conexao TCP para a transparencia de comunicacao com o cliente.
 
-*Solucao 2*
+**Solucao 2**
 - O `switch` da camada de transporte: frontend simplesmente redireciona a mensagem a um dos servidores(considerando metricas de desempenho). 
-- `Distribuicao`: frontend seleciona o melhor servidor de acordo com conteudo da mensagem recebida. Servidor tem um pedaco de codigo _distributor_
+- `Distribuicao`: frontend seleciona o melhor servidor de acordo com conteudo da mensagem recebida. Servidor tem um pedaco de codigo _distributor_      
 Funcionamento: Cliente manda uma requisicao de setup para o switch, que usa politica simples e manda para o middleware no servidor - distributor - que manda para o dispatcher, que ira analisar em qual servidor realmente deve ser direcionada a requisicao para o servidor mais adequado, por meio do uso do handoff tbm. e volta com a resposta para o switch que retorna para o servidor, ou seja tudo isso meio que cria o caminho usando um setup request, para quando for a real requisicao ja tenha as conexoes criadas para executar.
-
+![Solucao2Dispatcher](imagens/Solucao2Dispatcher.png)
 
 ### Migracao de codigo
 
 Por que migrar?
-- *Distribuicao de carga*
+- **Distribuicao de carga**
   - Assegurar que os servidores do data center estao suficientemente carregados(para previnir perda de energia)
   - Minimizar a comunicacao assegurando que os computadores estao proximos aos dados. Por exemplo pra facilitar a transferencia de arquivos
-- *Flexibilidade*: mover o codigo para o cliente quando necessario
+- **Flexibilidade**: mover o codigo para o cliente quando necessario
   - algumas coisas poderiam ser executadas no cliente, por exemplo ordenar os dados do cliente
 
 
 #### Abordagens para realizacao de migracao de codigo
-[Slides de contexto]
+[Slides de contexto][?]
 
 
 #### Migracao em sistemas heterogeneos
 Problema principal
 - A maquina destino nao pode ser adequada para executar o codigo migrado
-- A definicao de contexto/processo/processador é _altamente dependente do hardware, SO e libs locais_
+- A definicao de contexto/processo/processador é _altamente dependente do hardware, SO e libs locais_     
 De alguma forma precisaria mudar tudo para conseguir rodar o codigo, e pode ser que sejam maquinas com SO diferentes. 
-Nesse caso a uncia solucao seria usar uma maquina abstrata que é implementada nas diferentes plataformas *MAQUINAS VIRTUAIS*
+Nesse caso a unica solucao seria usar uma maquina abstrata que é implementada nas diferentes plataformas **MAQUINAS VIRTUAIS**
 
-> *Virtualizacao* de uma maquina que mais se adeque ao contexto necessario, e essa maquina virtual pode ser migrada para qualquer maquina que seja adequada
+> **Virtualizacao** de uma maquina que mais se adeque ao contexto necessario, e essa maquina virtual pode ser migrada para qualquer maquina que seja adequada
 
-Desempenho da migracao de VM, pode ter um problema secundario: uma migracao completa pode levar dezenas de segundos. Alem disso é preciso ficar atento ao fato de que um servico podera ficar indisponivel por varios segundos durante a migracao.
+Desempenho da migracao de VM, pode ter um problema secundario: uma migracao completa pode levar dezenas de segundos. Alem disso é preciso ficar atento ao fato de que um servico podera ficar indisponivel por varios segundos durante a migracao(_downtime_).
 
 
 ## Capitulo 4 - Comunicacao
@@ -427,7 +429,7 @@ Node N #node, thread, ou processo
 ### Multicast vs PuBsUB
 Tanto a comunicação multicast quanto o modelo pub/sub são utilizados para distribuir informações para vários clientes em sistemas distribuídos, mas possuem abordagens diferentes:
 
-*Comunicação Multicast:*
+**Comunicação Multicast:**
 
 * Mecanismo de distribuição: Na comunicação multicast, um remetente envia uma única mensagem que é entregue a vários destinos simultaneamente. É como se o remetente "transmitisse" a mensagem para um grupo de receptores ao mesmo tempo.
 * Grupos de destino: Os receptores, também conhecidos como "membros do grupo", precisam ser parte de um grupo multicast específico para receber a mensagem. O remetente envia a mensagem para um endereço de multicast específico, e apenas os membros desse grupo receberão a mensagem.
