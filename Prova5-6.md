@@ -35,7 +35,8 @@ _Propriedades do Identificador_:
 
 Como procurar o acesso ao recurso, dado um nome plano?
 #### Plano
-Problema: Dado um nome nao estruturado(ex: um identificador), como localizar seu ponto de acesso?
+Problema: Dado um nome nao estruturado(ex: um identificador), como localizar seu ponto de acesso?   
+_3 solucoes: Simples(broadcast/flooding/ponteiros), home-based, DHT, HLS._
 1. Solucao Simples(broadcasting/flooding/ponteiros)
    - **Broadcasting**: fazer o broadcast(todos os nos da rede) do ID, requisitando que a entidade devolva seu endereco
      - Nao escala para alem de _redes locais_
@@ -69,8 +70,8 @@ GNUTELLA - FLOODING
       -  O dereferenciamento pode ser automatico e invisivel para o cliente, basta seguir a sequencia de ponteiros
       -  Atualize a referencia do ponteiro quando o local atual for encontrado
       -  Problema de escalabilidade geografica(que podem requerer um mecanismo separada para reducao da sequencia)
-         -  Sequencias longas nao sao tolerantes a falha, ou seja se um node morrer, ja era o caminho de referencia
-         -  Maior latencia de rede devido ao processo de dereferenciamento
+         -  Sequencias longas `nao sao tolerantes a falha, ou seja se um node morrer, ja era o caminho de referencia`
+         -  `Maior latencia` de rede devido ao processo de dereferenciamento
 
 
 2. Abordagens baseadas em um local pre-determinado(home-based) - procurar em local pre-determinado
@@ -90,13 +91,13 @@ GNUTELLA - FLOODING
 - `Chord`: considere que os nodes estejam em forma de anel logico, sucessor e predecessor
   - A cada nó é atribuído um identificador aleatório de m-bits. Cada node um numero
   - A cada entidade é atribuída uma única chave de m-bits
-  - Entidades com chave k estão sob a jurisdição do nó com o menor
-id ≥ k (seu sucessor)
-Exemplo: arquivo a.mp4
-hash(a.mp4) = 7 = k
-No anel vai armazenar  com vase na regra id >= k
+  - Entidades com chave k estão sob a jurisdição do nó com o menor    
+id ≥ k (seu sucessor)   
+Exemplo: arquivo a.mp4    
+hash(a.mp4) = 7 = k   
+No anel vai armazenar  com vase na regra id >= k    
 
-- _Busca por uma informacao: solucao ruim_
+- _Busca por uma informacao: solucao ruim_    
 Faca com que cada node mantenha o registro de seus vizinhos e faca uma busca linear ao longo do anel (SUCESSO PARA SUCESSOR)
 - _NOTACAO_: chamamos de node P o node cujo identificador é P
 - Para melhorar o desempenho da busca: `SHORTCUTS` = `FINGERTABLES` diferente em cada node
@@ -115,17 +116,15 @@ nó com índice j tal que: q = FTp [j] ≤ k < FTp [j + 1]
     - Roteamente de proximidade: mantenha mais de um sucessor possivel e encaminhe a mensagem para o mais proximo. Exemplo no Chord , FTp[i] aponta para o primeiro node em INT = [p + 2^i-1, p+2^i - 1]. O node p pode guardar tambem ponteiros para outros nodes em INT
     - Selecao de vizinho por proximidade: quando houver uma escolha para determinar quem sera seus vizinho, escolha o mais proximo
 
-4. Servicos hierarquico de nomes(HLS)
-Arvores distribuidas
-Ideia: Construir uma arvore de busca em larga escala
-onde a rede é dividida em domínios hierárquicos.
-Cada domínio é representado por um diretório de nós separado.
+4. Servicos hierarquico de nomes(HLS)   
+- Arvores distribuidas
+- Ideia: Construir uma arvore de busca em larga escala onde a rede é dividida em domínios hierárquicos. Cada domínio é representado por um diretório de nós separado.
 
-So tem um caminho pra chegar, mas se um node morre morre toda uma estrutura. Podemos criar subdominios dentro do dominio, identificadores aleatorios. Subdominios podem ser criados usando areas geograficas, para ter conexoes rapidas.
+- So tem um caminho pra chegar, mas se um node morre morre toda uma estrutura. Podemos criar subdominios dentro do dominio, identificadores aleatorios. Subdominios podem ser criados usando areas geograficas, para ter conexoes rapidas.
 
 **HLS: organização em árvores**
 - _Invariantes_: endereco da entidade E é armazenado em uma folha ou node intermediario
-- odes intermediarios contem um ponteiro para um filho se a subarvore cuja raiz e o filho contenha o endereco da entidade 
+- Nodes intermediarios contem um ponteiro para um filho se a subarvore cuja raiz e o filho contenha o endereco da entidade 
 - A raiz conhece todas as entidades
 
 **HLS: consulta**
@@ -133,7 +132,7 @@ So tem um caminho pra chegar, mas se um node morre morre toda uma estrutura. Pod
 - Se esse node souber sobre E(recurso que deseja achar), seguir o ponteiro para baixo, se nao, continue a subir
 - Continue subindo ate encontrar a raiz
 
-*HLS: insercao*
+**HLS: insercao**
 - Um pedido de insercao é encaminhado ao node folha que conhece a entidade E
 - Primeiro verifica se existe E em alguma parte da estrutura, nao pode simplesmente inserir
 
@@ -149,8 +148,8 @@ Nome estruturado, nao é uma string aleatoria, ou seja possivel de leitura por p
 - `Problema`: Para resolver um nome precisamos de um diretorio. Como encontrar esse node raiz inicialmente? 
   - Mecanismo de closure: inicia em um servidor DNS, cmcc.ufabc.edu.br -> raiz
 
-**DNS: Implementacao de espacos de nomes**
-Problema: Distribuir o processo de resolução de nomes, bem como o gerenciamento do espaço de nomes, em várias máquinas, de forma a distribuir o grafo de nomes para garantir escalabilidade e disponibilidade.
+**DNS: Implementacao de espacos de nomes**    
+- Problema: Distribuir o processo de resolução de nomes, bem como o gerenciamento do espaço de nomes, em várias máquinas, de forma a distribuir o grafo de nomes para garantir escalabilidade e disponibilidade.
 - Um dos primeiros SDs implementados - Nome a um IP
 
 **Distribuicao**
@@ -173,19 +172,19 @@ servidores de nomes local. Mudanças regulares ocorrem neste nível.(por exemplo
 | Cache no lado do cliente | Sim | Sim | As vezes |
 
 
-**DNS: Resolucao de nomes ITERATIVA**
+**DNS: Resolucao de nomes ITERATIVA**   
 Camada por camada ate encontrar o nome.
 - Cliente envia resolve(dir,[name1,.., namek=K]) para ServerRaiz responsavel por dir. = Procure no diretorio
 - Server0 resolve(dir, name1) -> dir1, ddevolve a identificacao(IP) de Server1 que contem dir1.
 - Cliente envia resolve(dir1,[name2,.., namek=K]) para Server1, etc
 
-**DNS: Resolucao de nomes RECURSIVA**
+**DNS: Resolucao de nomes RECURSIVA**   
 Ao inves de retornar e acumular as referencias ate achar totalmente as informacoes, faz uma busca recursiva. Qualquer duvida olhar desenho da aula em video. Manda a informacao para o node raiz e ai o node raiz se vira ate obter todas as referencias do endereco completo e retornar uma unica vez ao cliente.
 - Cliente envia resolve(dir,[name1,.., namek=K]) para ServerRaiz responsavel por dir. = Procure no diretorio
 - Server0 resolve(dir, name1) -> dir1, e envia resolve(dir1,[name2,.., namek=K]) para Server1, que contem dir1
 - Server0 espera pelo resultado de Server1 e devolve para o cliente
 
-**DNS: Problema de Escalabilidade**
+**DNS: Problema de Escalabilidade**   
 
 _Escalabilidade de tamanho_: Devemos garantir que os servidores possam lidar com um grande numero de requisicoes por unidade de tempo. Servidores alto nivel podem estar com problemas serios.
 `Solucao`: Assuma (pelo menos nos níveis global e de administração) que os conteúdos dos nós mudam muito pouco. Assim podemos aplicar replicação extensivamente, mapeando nós a múltiplos servidores e começar a resolução de nomes no servidor mais próximo.
@@ -198,7 +197,7 @@ Ao mapear nós em servidores que podem ser localizados em qualquer lugar, nós a
 
 #### Nomeacao baseada em atributos
 
-Em muitos casos, é mais conveniente nomear e procurar entidades pelos atributos => servicos tradicionais de diretorios(ex: paginas amarelas)
+- Em muitos casos, é mais conveniente nomear e procurar entidades pelos atributos => servicos tradicionais de diretorios(ex: paginas amarelas)
 - Problema: Operações de consulta globais podem ser muito caras(nao poderia ser feito, muito custoso), já que necessitam que os valores dos atributos procurados correspondam aos valores reais das entidades. Em princípio, teríamos que inspecionar todas as entidades.
 `Solucao`: Implementar serviços de diretórios básicos locais (tais como bancos de
 dados) e combiná-los com os sistemas de nomes estruturados tradicionais.
@@ -231,18 +230,18 @@ Varios dispositivos que precisam acessar um recurso, mas somente um pode acessar
 _Solucoes_
 - **Baseado em permissao**: um processo que quiser entrar na secao critica(ou acessar um recurso) precisa da permissao de outros processos
 
-1. **Permissao: Centralizado**
-Node responsavel por dar a permissao: _coordenador_
+1. **Permissao: Centralizado**    
+- Node responsavel por dar a permissao: _coordenador_
   - Processo P1 pede permissao ao coordenador para acessar o recurso compartilhado. Verificara na fila em sua memoria para verificar se alguem ja pediu, fila vazia -> permissao concedida
   - Processo P2 tambem quer acessar o recurso, coordenador sabe que P1 ja pediu -> recurso ja emprestado -> o coordenador nao responde, e coloca em sua fila quem pediu e nao deu(P2)
   - Quando P1 libera o recurso, avisa o coordenador, e o coordenador finalmente responde para P2 -> permissao concedida
-  - _Possiveis problemas:_ Poderia acontecer de P1 nao entregar a mensagem liberando o recurso, poderia acontecer de o coordenador morrer. Poderia ter problema de escalabilidade de tamanho.
+  - _Possiveis problemas:_ `Poderia acontecer de P1 nao entregar a mensagem liberando o recurso`, poderia acontecer de `o coordenador morrer`. Poderia ter `problema de escalabilidade de tamanho`, travando o recurso.
 
 2. **Permissao: Distribuido**
-O processo que precisa do recurso envia uma requisicao de permissao a todos os outros processos(inclusive para ele mesmo)
+- O processo que precisa do recurso envia uma requisicao de permissao a todos os outros processos(inclusive para ele mesmo)
    - A resposta a permissao(denominada de ACK) é enviada quando:
      - O processo receptor nao tem interesse no recurso compartilhado ou
-     - o processo receptor está esperando por um recurso, mas tem menos prioridade (a prioridade é determinada via comparaçao de timestamps*)
+     - o processo receptor está esperando por um recurso, mas tem menos prioridade (a prioridade é `determinada via comparaçao de timestamps*`)
    - Em todos os outros casos, o envio da resposta é adiado.
    - * timestamp é o horário do relógio ou um valor (e.g., contador).
    - Exemplo: 3 processos com identificadores 0,1,2 e proprio ts. 
@@ -255,7 +254,7 @@ O processo que precisa do recurso envia uma requisicao de permissao a todos os o
      - P0: acessou e liberou o recurso, respondendo OK para P2
      - P2: 3 permissoes, pode acessar o recurso
 
-- **Baseado em tokens**: um token é passado entrer processos. Aquele processo que tiver o token pode entrar na secao critica ou passa-lo para frente quando nao tiver interessado.
+- **Baseado em tokens**: um token é passado entre processos. Aquele processo que tiver o token pode entrar na secao critica ou passa-lo para frente quando nao tiver interessado.
   - Organizar os processos em anel logico e passar um token entre eles. Aquele que estiver token pode entrar na secao critica(se ele quiser) = overlay logica de conexoes
   - Anel:
     - Algum deles tem um token node 0
@@ -266,7 +265,7 @@ O processo que precisa do recurso envia uma requisicao de permissao a todos os o
   - Cenario de que nenhum node quer somente o 7, porque nao passar direto ao inves de ir de sucessor em sucessor?
 
 - **Descentralizado**:
-Assuma que todo recurso é replicado N vezes (para não ter SPoF, i.e., maior disponibilidade).
+- Assuma que todo recurso é replicado N vezes (para não ter SPoF, i.e., maior disponibilidade).
   - Cada replica está associada a seu próprio coordenador.
   - acesso requer a maioria dos votos de m > N/2 coordenadores. E nao esperar OK de todos
 
@@ -281,8 +280,8 @@ Usando probabilidade
 Corretude é violada quando m − f coordenadores (corretos, sem
 reset) são minoria
 • I.e., existe uma maioria dando a exclusão mútua para outro. 
-- [ESTUDAR TABELA DE COMPARACAO - EXCLUSAO MUTUA]
-
+![Exclusao Mutua Comparacao](imagens/ExclusaoMutua.png)     
+Starvation: varios nodes querem acessar o mesmo recurso, competicao, e muitas mensagens, as vezes alguns nodes nunca irao receber a msg.
 
 ### Eleicao 
 Eleicao de um node que vai ser responsavel por um grupo de node ou servico. Selecionar um node.
@@ -308,10 +307,10 @@ de eleição ao seu sucessor. Se um sucessor estiver indisponível, a mensagem �
 Quando a mensagem voltar ao nó que iniciou, todos tiveram a chance de anunciar a sua presença. 
 - O nó que iniciou circula uma mensagem pelo anel com a lista de
 nós “vivos”. O processo com maior prioridade é eleito coordenador.
-- **Exemplo funcionamento**: anel de 0 a 7(id)
-    (1) - (2) - (3) - (4)
-     |                  |
-    (0) - (7) - (6) - (5)
+- **Exemplo funcionamento**: anel de 0 a 7(id)            
+    (1) - (2) - (3) - (4)       
+     |                  |       
+    (0) - (7) - (6) - (5)       
   - Suponha que um node6 vai iniciar o processo de eleicao porque ele descobriu que o sucessor morreu node7. O node7 era o lider(maior id).
   - node6 nao sabe nda ainda, pq poderia ter um node8. 
   - node6 vai mandar uma mensagem para o seu sucessor, nesse caso node0, enviando o identificador 6.
