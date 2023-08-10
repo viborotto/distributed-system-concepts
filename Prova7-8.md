@@ -37,7 +37,7 @@ _Operacoes conflitantes_:
 *Solucao*: diminuir os requisitos de consistência e, com sorte, conseguir evitar sincronizações globais custosas.
 
 ### Consistência centrada nos **dados**
-Componentes(Modelo do sistem):
+Componentes(Modelo do sistema):
 - Data store é uma colecao de dispositivos de armazenamento
 - Processos que enviam operacoes de leitura e escrita
 - Interacao entre um data store distribuido e os processos, no qual o data store define o resultado de operacoes concorrentes de leitura e escrita.
@@ -57,45 +57,33 @@ Componentes(Modelo do sistem):
 
 > LINHA DE TEMPO do processo 1 e 2 que realiza operacoes. W =write do valor a, R=leitura de x recebendo Nil
 - Processo 1 fez escrita da variavel x=a 
-- Processo 2 leu x e devolve Nil
-P1:    W(x)a
-P2:             R(x)NIL     R(x)a
-
-P1:       -->       W(x)a
-P2:      R(x)NIL    -->     R(x)a
+- Processo 2 leu x e devolve Nil    
+- ![Sequencial1](imagens/ConsistSequencial.png)   
 
 - Sequencial é facil de entender e dificil de implementar
 - FoundationDB: ACID + NoSQL - criado pela Apple
-- `Definicao`: _Qualquer intercalação de operações (read e write) é aceitável desde que todos os processos vejam a mesma intercalação e na ordem especificada pelo seu programa_
-Exemplo: 
-P1:    W(x)a
-P2:          W(x)a
-P3:                R(x)b     R(x)b
-P4:                      R(x)b     R(x)b   
+- `Definicao`: _Qualquer intercalação de operações (read e write) é aceitável desde que todos os processos vejam a mesma intercalação e na ordem especificada pelo seu programa_    
+Exemplo:    
+- ![ExemploConsistSequencial](imagens/ExemploConsistSequencial.png)       
 - Apresenta data store com consistência sequencial? Lembre que com a sequencial é possível mover o W(x)a
-Porque P3 deu _read b antes de read a_? INCONSISTENCIA SEQUENCIAL
+- Porque P3 deu _read b antes de read a_? INCONSISTENCIA SEQUENCIAL
 
 
 #### Causal
 > Enfraquecimento da sequencial (usando o conceito de causalidade)
 - `Definicao`: Operações _de write_ que potencialmente têm uma relação de _causalidade_ devem ser vistas por todos os processos na mesma ordem
-- Diferentemente da sequencial, Writes concorrentes podem ser vistos em uma ordem diferente por processos diferentes (desde que não tenham uma relação de causalidade). - _todos os processos NAO precisam ver a mesma intercalacao de read/write, tanto faz a ordem_
+- Diferentemente da sequencial, Writes concorrentes podem ser vistos em uma ordem diferente por processos diferentes (desde que não tenham uma relação de causalidade). 
+- _todos os processos NAO precisam ver a mesma intercalacao de read/write, tanto faz a ordem_
 
-Exemplo1: 
-P1:   W(x)a
-P2:        R(x)a   W(x)b
-P3:                     R(x)b     R(x)a
-P4:                     R(x)a     R(x)b   
+Exemplo1:     
+![Exemplo1Causal](imagens/Exemplo1Causal.png)
 Apresenta consistência causal?
-- Observar writes, W(x)a e W(x)b tem relacao de causalidade? `Sim`, porque read le a informacao do a em P2, entao vem antes (happens before) de W(x)b. Entao o resto deveria enxergar a mesma ordem, `Nao apresenta` por que P3 e P4 deveriam obter a mesma ordem, entao a definicao fica meio verdadeira, portanto NAO APRESENTA CONSISTENCIA CAUSAL
+- Observar writes, W(x)a e W(x)b tem relacao de causalidade? `Sim`, porque read le a informacao do a em P2, entao vem antes (happens before) de W(x)b. Entao o resto deveria enxergar a mesma ordem, `Nao apresenta` porque P3 e P4 deveriam obter a mesma ordem, entao a definicao fica meio verdadeira, portanto `NAO APRESENTA CONSISTENCIA CAUSAL`
 
-Exemplo2: 
-P1:   W(x)a
-P2:             W(x)b
-P3:                     R(x)b     R(x)a
-P4:                     R(x)a     R(x)b   
-_Writes concorrentes_, portanto APRESENTA CONSISTENCIA CAUSAL
-Pode parecer estranho a ordem de P3 e P4, e se voce nao concordar pode usar a sequencial que mantem a ordem que enxerga a intercalacao de operacoes.
+Exemplo2:     
+![Exemplo2Causal](imagens/Exemplo2Causal.png)     
+- _Writes concorrentes_, portanto `APRESENTA CONSISTENCIA CAUSAL`
+- Pode parecer estranho a ordem de P3 e P4, e se voce nao concordar pode usar a sequencial que mantem a ordem que enxerga a intercalacao de operacoes.
 
 
 #### Eventual
@@ -111,12 +99,12 @@ Dependendo da aplicação é aceitável que *as atualizações não sejam propag
 
 Exemplo: Cliente C2 obtém um valor antigo
 
-*Protocolos de consistencia*
+#### Protocolos de consistencia   
 Descrevem a implementacao de um modelo de consistencia especifico
 
 2 tipos, ambos centrada nos dados _consistencia SEQUENCIAL_:
-1. *Primary-based*
-- *Remote-write backup*
+1. **Primary-based**
+- **Remote-write backup**
     - Data store com primary db responsavel pelo item x
     - Os demais db sao as replicas chamadas de `backup`
     - Cliente acessa a replica backup e faz o Write1, mas a replica nao é repsonsavel pelo item x 
@@ -130,12 +118,12 @@ Descrevem a implementacao de um modelo de consistencia especifico
     - _Normalmente aplicado em banco de dados distribuidos e sistemas de arquivos que requerem alto grau de tolerancia a falhas. As replicas em geral estao numa mesma LAN._
     - `Problema`: essas operacoes de escrita sao lentas, pois todas as replicas devem concordar com a escrita antes de devolver o resultado ao cliente.
     - Como resolver? tradeoffs -> Local write
-- *Local Write*
+- **Local Write**
   - Aqui ao inves de encaminhar para o primary, essa replica se torna o new primary
   - Imagine o cenario que o primary esta bem longe do client, e a replica esta mais perto. E isso permite modificacoes mesmo desconectado e depois de conectar manda as atualizacoes para as replicas
   - _Computacao movel em modo desconectado(envia todos os arquivos relevantes para o usuario antes do usuario se desconectar e atualiza mais tarde)_
 
-- *Chain replication*
+- **Chain replication**
     - Modelo mais recente de consistencia
     - Visa garantir uma forte consistencia dos dados
     - Os servidores sao organizados em uma cadeia linear, onde cada servidor possui uma replica dos dados. O fluxo de operacoes é unidirecional, seguindo a ordem da cadeia.
@@ -158,21 +146,21 @@ Descrevem a implementacao de um modelo de consistencia especifico
 > Esses problemas são inerentes aos modelos de consistência que dependem de uma sequência de nós para replicar as operações, pois a latência entre os nós pode resultar em divergências temporárias nos dados.
 
 `Diferenca entre o remote e local write`:
-> *remote*: _todas_ as replicas devem concordar com a escrita antes de responder ao cliente
-> *local*: _uma_ replica primary executa a escrita e devolve a resposta ao cliente(depois dissemina a escrita).
+> **remote**: _todas_ as replicas devem concordar com a escrita antes de responder ao cliente
+> **local**: _uma_ replica primary executa a escrita e devolve a resposta ao cliente(depois dissemina a escrita).
 
-INTERMEDIARIO ENTRE AS DUAS : *QUORUM*
+INTERMEDIARIO ENTRE AS DUAS : **QUORUM**
 
-1. *Replicacao de Escrita*
+1. **Replicacao de Escrita**
 
-*Quórum-based*: garante que toda operacao realizada quando existir uma maioria de votos: distingue o _quorum de leitura_ do _quorum de escrita_
+**Quórum-based**: garante que toda operacao realizada quando existir uma maioria de votos: distingue o _quorum de leitura_ do _quorum de escrita_
 
 _Requisito_: NR + NW > N ; NW >N/2
  - Garante Interseccao, que faz com que mesmo que tenha um dos valores defazados um ta atualizado no caso do read.
  - A segunda regra é necessaria pois pode ter inconsistencia de valores diferentes vindos de quorum de leitura e de escrita.
-   - *ROWA*:  Read Once, Write All. Ou seja somente um para leitura e o resto para escrita. Leitura rapida, e escrita lenta. Em um sistema que tem muitas leituras e poucas escritas. Isso significa que, para realizar uma operação de escrita, é necessário obter respostas de um número maior de réplicas do que o número necessário para operações de leitura.
+   - **ROWA**:  Read Once, Write All. Ou seja somente um para leitura e o resto para escrita. Leitura rapida, e escrita lenta. Em um sistema que tem muitas leituras e poucas escritas. Isso significa que, para realizar uma operação de escrita, é necessário obter respostas de um número maior de réplicas do que o número necessário para operações de leitura.
    - Portanto, o `ROWA backup não é um modelo de consistência sequencial`, mas sim uma estratégia específica de replicação que define como as leituras e escritas são realizadas em um sistema distribuído com várias réplicas.
-   - *RAWO*: Read All, Write Once. Leitura lenta, escrita rapida. = `Cassandra`
+   - **RAWO**: Read All, Write Once. Leitura lenta, escrita rapida. = `Cassandra`
 
 #### Cassandra
 Utiliza o conceito de anel Chord para os servidores. Utiliza o conceito de _consistent hashing_ para chaves.
@@ -189,7 +177,7 @@ réplica dinamicamente, sob demanda de um cliente(_cache do cliente_)
 
 [Slides 56 ao 57, nao entendi][?]
 
-*Gerenciamento distribuicao de conteudo*
+**Gerenciamento distribuicao de conteudo**
 - Considere apenas uma combinação cliente–servidor ou servidor-servidor:
   - servidor propaga apenas a notificação/invalidação de uma atualização para clientes (normalmente usada por caches)
   - servidor transfere dados para outros servidores “réplica” (bancos de dados distribuídos): `replicação passiva`
@@ -202,7 +190,7 @@ mesmo que o alvo não tenha pedido por ela
 - _pulling_ iniciada pelo cliente; uma atualização solicitada pelo
 cliente
 
-> Podemos trocar dinamicamente entre os métodos pulling e pushing com o uso de *leases: um contrato no qual o servidor promete enviar (push) atualizações para o cliente até que o lease expire*.
+> Podemos trocar dinamicamente entre os métodos pulling e pushing com o uso de **leases: um contrato no qual o servidor promete enviar (push) atualizações para o cliente até que o lease expire**.
 
 `Problemas` com o lease: Fazer com que a data de expiração do lease dependa do comportamento do sistema (leases adaptativos) e assim reduzir a carga no servidor:
 - `leases com idade`: um objeto que não for modificado nos últimos
