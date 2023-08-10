@@ -359,18 +359,19 @@ Miríade de dispositivos móveis: smartphones, tablets, óculos AR/VR, etc.
 - Mobilidade implica em que a localizacao do dispositivo mudara no tempo. DESCOBERTA
 - A comunicacao pode ser dificil, pois nao ha uma rota estavel. Leva as redes tolerantes e disrupcoes
 
-******video padroes de mobilidade slide 71***********
-Existe algum relacionamento entre a disseminacao da informacao e a mobilidade das pessoa?
-Ideia basica: posso fazer intercambio de informacoes por meio de enconstro(Pocket switched networks)
-[?]
+- **Padroes de comunidade**
+  - Existe algum relacionamento entre a disseminacao da informacao e a mobilidade das pessoa?
+  - Ideia basica: posso fazer intercambio de informacoes por meio de enconstro(Pocket switched networks)
+  - Como detectar sua comunidade sem ter um conhecimento global?
+  - _Estrategia: crescimento gradual da lista_: tem uma comunidade por exemplo 100 e o conjunto familiar que seriam por exemplo os 10 amigos mais proximos dentro dessa comunidade. Para adicionar um novo nó a comunidade quando tem uma alta sobreposicao. Pra juntar comunidades é quando a interseccao da comindade 1 e comunidade do novo node é maior que que a uniao.
+  - 
 
-3. <u>Sistemas de sensores: sente e atúa no ambiente.</u>
-
-**Caracteristicas redes de sensores**
-- Os nodes aos quais os sensores estao presos sao:
-  - Muitos sensores(10s - 1000s)
-  - Simples(Pouca capacidade de memoria/computacao/comunicacao)
-  - Normalmente necessitam de uma bateria
+1. <u>Sistemas de sensores: sente e atúa no ambiente.</u>
+  - **Caracteristicas redes de sensores**
+  - Os nodes aos quais os sensores estao presos sao:
+    - Muitos sensores(10s - 1000s)
+    - Simples(Pouca capacidade de memoria/computacao/comunicacao)
+    - Normalmente necessitam de uma bateria
   
 
 
