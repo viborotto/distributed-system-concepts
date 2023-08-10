@@ -345,6 +345,7 @@ trabalho de Pk termina.  O maior sempre ganha, por isso o nome de Bully “valen
   - Portanto o node5 sabe que tem alguem maior que ele.
   - Node6 se torna o lider, e avisa todos os nodes com mensagem Coordinator. E agora serve para dar exclusao mutua de algum recurso
 - Note que aqui assumimos o caminho feliz, que a comunicacao é confiavel, TCP, mensagem sem demorar muito
+- Se demorar de chegar a mensagem pode ser um problema
 
 **Perguntas**
 - _Posso usar eleição para exclusão mútua? Como?_
@@ -354,9 +355,7 @@ Os algoritmos de eleição são úteis em cenários onde existe a necessidade de
 
 - _Posso usar exclusão mútua para eleição? Como?_
 Sim, em sistemas distribuídos, é possível usar o conceito de exclusão mútua para implementar um algoritmo de eleição. A ideia é que, durante o processo de eleição, apenas um processo pode ser escolhido como o líder, evitando que múltiplos processos se tornem líderes ao mesmo tempo.
-
 Um exemplo de algoritmo de eleição que utiliza o conceito de exclusão mútua é o "Bully Algorithm" (algoritmo do valentão). Este algoritmo é geralmente aplicado em sistemas distribuídos com topologia de rede tipo estrela, onde cada processo possui um identificador exclusivo (geralmente um número inteiro) que representa sua "força" em relação aos outros processos.
-
 O algoritmo do Bully é tolerante a falhas e garante que apenas um processo se torne o líder por vez, seguindo a ideia de exclusão mútua. No entanto, é importante notar que existem outros algoritmos de eleição, como o "Ring-based Election", mencionado anteriormente, que também podem ser usados para implementar exclusão mútua durante o processo de eleição em sistemas distribuídos. A escolha do algoritmo depende da topologia da rede e dos requisitos específicos do sistema distribuído.
 
 
@@ -417,7 +416,7 @@ Funcionamento:
 - EXTERNA: por usar relogios atomicos
 
 #### Sincronizacao Interna (Berkeley)
-Algoritmo de Berkeley: permita o servidor de hora(referencia de mais preciso) sonde todas as maquinas periodicamente, e calcula uma media informando cada mquina como ela deve ajustar o seu _horario relativo ao seu horario atual(servidor interno)_, adiantando ou atrasando.
+Algoritmo de Berkeley: permita o servidor de hora(referencia de mais preciso) onde todas as maquinas periodicamente, e calcula uma media informando cada mquina como ela deve ajustar o seu _horario relativo ao seu horario atual(servidor interno)_, adiantando ou atrasando.
 
 - Nota: Você terá todas as máquinas em sincronia entre 20 e 25 ms. Você nem precisa propagar o horário UTC (Universal Coordinated Time, horário real medido em 50 relógios atômicos no mundo).
 
@@ -463,22 +462,22 @@ Observações:
 tempo (concorrente). _Desempate usando os IDs dos processos criam uma ordem TOTAL dos eventos_. Sem isso, é ordem parcial.
 
 
-**Exemplo**
-3 processos com contadores de eventos funcionando em velocidades diferentes
-P1: de 6 em 6
-P2: de 8 em 8
-P3: de 10 em 10
-Exemplo se P3 60 manda mensagem m3 pra P2 56, 56 < 60, ai 56 vira 60+1 = P2 61, ajusta o relogio P2, porem os proximos do relogio sao ajustados tbm +8 : 61, 69, 77. 
-- Mantendo uma ordem total dos eventos
+**Exemplo**     
+3 processos com contadores de eventos funcionando em velocidades diferentes   
+P1: de 6 em 6   
+P2: de 8 em 8   
+P3: de 10 em 10   
+Exemplo se P3 60 manda mensagem m3 pra P2 56, 56 < 60, ai 56 vira 60+1 = P2 61, ajusta o relogio P2, porem os proximos do relogio sao ajustados tbm +8 : 61, 69, 77.    
+- Mantendo uma ordem total dos eventos    
 
 #### Relogio logico: Multicast de ordem total
-`Problema`: Algumas vezes precisamos garantir que atualizações concorrentes em um banco de dados replicado sejam vistas por todos _como se tivessem ocorrido na mesma ordem._
+`Problema`: Algumas vezes precisamos garantir que atualizações concorrentes em um banco de dados replicado sejam vistas por todos _como se tivessem ocorrido na mesma ordem._   
   - P1 adiciona R$ 100 a uma conta (valor inicial: R$ 1000)
   - P2 incrementa a conta em 1%
   - DB replicado DB1 e DB2
   - Imagine Brasil e Japao, o P1 no Brasil e P2 no japao, acontece que P1 vai demorar mais pra chegar no japao e P2 vai demorar pra chegar no brasil
   - Na ausência de sincronização correta, a ordem resulta em:
-    réplica #1 ← R$ 1111, enquanto que na réplica #2 ← R$ 1110.
+    réplica #1 ← R$ 1111, enquanto que na réplica #2 ← R$ 1110.     
     `INCONSISTENCIA`
 
 
@@ -557,12 +556,12 @@ Cada processo tem um relogio, lamport ja tinha, mas agora vetor em que cada slot
 
 > Muito similar à regra do relógio lógico de Lamport, porém específica para cada processo
 
-**Exemplo funcionamento**
+**Exemplo funcionamento**     
 [Imagem]
 Cenarios; causal, conflitar, 
 
 
-**Exercicios**
+**Exercicios**    
 [Fazer]
 
 
