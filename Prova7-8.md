@@ -128,7 +128,7 @@ Descrevem a implementacao de um modelo de consistencia especifico
     - Visa garantir uma forte consistencia dos dados
     - Os servidores sao organizados em uma cadeia linear, onde cada servidor possui uma replica dos dados. O fluxo de operacoes é unidirecional, seguindo a ordem da cadeia.
     - O processo de escrita comeca no node de inicio da cadeia(head) e é propagado sequencialmente pelos nodes intermediarios ate chegar no node final(tail). Somente apos a confirmacao de gravacao no node final, finaliza a operacao de maneira completa.
-    - O Chain Replication garante a `consistência forte`, pois todas as operações são executadas sequencialmente e, como o fluxo é unidirecional, `novas operações não afetam as operações que já foram confirmadas`, e todas as réplicas estejam atualizadas.
+    - O Chain Replication garante a `consistência forte`, pois todas as operações são executadas `sequencialmente` e, como o fluxo é unidirecional, `novas operações não afetam as operações que já foram confirmadas`, e todas as réplicas estejam atualizadas.
 
 
 
