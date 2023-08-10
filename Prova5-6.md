@@ -19,10 +19,10 @@
 ### Definicoes: nomes, identificadores e endereços
 
 
-*Nomes*: sao usados para denotar entidades(endereco de rede, servico web,..) em um sistema distribuido. Para realizar operacoes em uma entidade é preciso ter acesso a ela por meio de um `ponto de acesso`(_endereco_, por exemplo IP e porta). Nomes sao independentes de onde a entidade esta localizada, p.e URL
+**Nomes**: sao usados para denotar entidades(endereco de rede, servico web,..) em um sistema distribuido. Para realizar operacoes em uma entidade é preciso ter acesso a ela por meio de um `ponto de acesso`(_endereco_, por exemplo IP e porta). Nomes sao independentes de onde a entidade esta localizada, p.e URL
 
 
-*Identificadores*
+**Identificadores**
 _Nomes puros ou planos_: sao nomes que nao tem significado proprio, sao strings aleatorias. Nomes puros podem ser usados apenas para comparacao.
 
 _Propriedades do Identificador_: 
@@ -37,12 +37,12 @@ Como procurar o acesso ao recurso, dado um nome plano?
 #### Plano
 Problema: Dado um nome nao estruturado(ex: um identificador), como localizar seu ponto de acesso?
 1. Solucao Simples(broadcasting/flooding/ponteiros)
-   - *Broadcasting*: fazer o broadcast(todos os nos da rede) do ID, requisitando que a entidade devolva seu endereco
+   - **Broadcasting**: fazer o broadcast(todos os nos da rede) do ID, requisitando que a entidade devolva seu endereco
      - Nao escala para alem de _redes locais_
      - Requer que todos os processos escutem e processem os pedido de localizacao
      - ARP(Address Resolution Protocol): para encontrar o endereco MAC associado a um IP, faz o broadcast da consulta "quem tem esse endereco IP?"
 
-   -  *Flooding*: um node X envia requisicao R por um arquivo A a alguns vizinhos V. O node V recebe e realiza o seguinte processo
+   -  **Flooding**: um node X envia requisicao R por um arquivo A a alguns vizinhos V. O node V recebe e realiza o seguinte processo
    -  Problema de Escalabilidade pode chegar a mesma informacao de nodes diferentes(de tamanho e geográfica), pois pode demorar se estiver em outro pais TTL. Para tentar conter isso o ideal seria usar o flooding com um limite usando o TTL para a mensagem, baseado em saltos, ou seja "so pode saltar 2", 2 nodes
 ```python
       -  Se V ja viu a req antes, a ignora
@@ -65,7 +65,7 @@ GNUTELLA - FLOODING
          
 ```
 
-   -  *Ponteiros*: quando uma entidade se mover ela deixa pra tras um ponteiro para sua nova localizacao
+   -  **Ponteiros**: quando uma entidade se mover ela deixa pra tras um ponteiro para sua nova localizacao
       -  O dereferenciamento pode ser automatico e invisivel para o cliente, basta seguir a sequencia de ponteiros
       -  Atualize a referencia do ponteiro quando o local atual for encontrado
       -  Problema de escalabilidade geografica(que podem requerer um mecanismo separada para reducao da sequencia)
@@ -123,12 +123,12 @@ Cada domínio é representado por um diretório de nós separado.
 
 So tem um caminho pra chegar, mas se um node morre morre toda uma estrutura. Podemos criar subdominios dentro do dominio, identificadores aleatorios. Subdominios podem ser criados usando areas geograficas, para ter conexoes rapidas.
 
-*HLS: organização em árvores*
+**HLS: organização em árvores**
 - _Invariantes_: endereco da entidade E é armazenado em uma folha ou node intermediario
 - odes intermediarios contem um ponteiro para um filho se a subarvore cuja raiz e o filho contenha o endereco da entidade 
 - A raiz conhece todas as entidades
 
-*HLS: consulta*
+**HLS: consulta**
 - Comece a busca pelo node folha local
 - Se esse node souber sobre E(recurso que deseja achar), seguir o ponteiro para baixo, se nao, continue a subir
 - Continue subindo ate encontrar a raiz
@@ -149,11 +149,11 @@ Nome estruturado, nao é uma string aleatoria, ou seja possivel de leitura por p
 - `Problema`: Para resolver um nome precisamos de um diretorio. Como encontrar esse node raiz inicialmente? 
   - Mecanismo de closure: inicia em um servidor DNS, cmcc.ufabc.edu.br -> raiz
 
-*DNS: Implementacao de espacos de nomes*
+**DNS: Implementacao de espacos de nomes**
 Problema: Distribuir o processo de resolução de nomes, bem como o gerenciamento do espaço de nomes, em várias máquinas, de forma a distribuir o grafo de nomes para garantir escalabilidade e disponibilidade.
 - Um dos primeiros SDs implementados - Nome a um IP
 
-*Distribuicao*
+**Distribuicao**
 _Tres niveis distintos_
 1. `Nível global`: consiste de um diretório de nós de alto nível. Suas principais características são que os nós do diretório devem ser gerenciados em conjunto por diferentes administradores e que há uma relativa estabilidade nos nomes, ou seja, as entradas do diretório são modificadas muito raramente
 2.  `Nível de administração`: nós de diretório de nível intermediário. Podem ser agrupados e cada grupo pode ser responsabilidade de um administrador diferente. Apesar de estáveis, mudam com mais frequência do que entradas no nível global(normalmente por cada pais)
@@ -161,7 +161,7 @@ _Tres niveis distintos_
 administrador. O problema principal é mapear os nós de diretório aos
 servidores de nomes local. Mudanças regulares ocorrem neste nível.(por exemplo .ufabc)
 
-*Comparacao*
+**Comparacao**
 
 |Item|Global|Administracao|Gerencial |
 | ------- | ------- | ------- |------- |
@@ -173,19 +173,19 @@ servidores de nomes local. Mudanças regulares ocorrem neste nível.(por exemplo
 | Cache no lado do cliente | Sim | Sim | As vezes |
 
 
-*DNS: Resolucao de nomes ITERATIVA*
+**DNS: Resolucao de nomes ITERATIVA**
 Camada por camada ate encontrar o nome.
 - Cliente envia resolve(dir,[name1,.., namek=K]) para ServerRaiz responsavel por dir. = Procure no diretorio
 - Server0 resolve(dir, name1) -> dir1, ddevolve a identificacao(IP) de Server1 que contem dir1.
 - Cliente envia resolve(dir1,[name2,.., namek=K]) para Server1, etc
 
-*DNS: Resolucao de nomes RECURSIVA*
+**DNS: Resolucao de nomes RECURSIVA**
 Ao inves de retornar e acumular as referencias ate achar totalmente as informacoes, faz uma busca recursiva. Qualquer duvida olhar desenho da aula em video. Manda a informacao para o node raiz e ai o node raiz se vira ate obter todas as referencias do endereco completo e retornar uma unica vez ao cliente.
 - Cliente envia resolve(dir,[name1,.., namek=K]) para ServerRaiz responsavel por dir. = Procure no diretorio
 - Server0 resolve(dir, name1) -> dir1, e envia resolve(dir1,[name2,.., namek=K]) para Server1, que contem dir1
 - Server0 espera pelo resultado de Server1 e devolve para o cliente
 
-*DNS: Problema de Escalabilidade*
+**DNS: Problema de Escalabilidade**
 
 _Escalabilidade de tamanho_: Devemos garantir que os servidores possam lidar com um grande numero de requisicoes por unidade de tempo. Servidores alto nivel podem estar com problemas serios.
 `Solucao`: Assuma (pelo menos nos níveis global e de administração) que os conteúdos dos nós mudam muito pouco. Assim podemos aplicar replicação extensivamente, mapeando nós a múltiplos servidores e começar a resolução de nomes no servidor mais próximo.
@@ -204,10 +204,10 @@ Em muitos casos, é mais conveniente nomear e procurar entidades pelos atributos
 dados) e combiná-los com os sistemas de nomes estruturados tradicionais.
 
 
-*Implementando um servico de diretorio*
+**Implementando um servico de diretorio**
 Solucao para uma busca escalavel: Implementar um servico com diversos bancos de dados locais, combinando-o com o DNS
 
-*LDAP -  Uma das implementacoes*
+**LDAP -  Uma das implementacoes**
 Cada entrada do diretório consiste em um par (atributo, valor), unicamente nomeado para facilitar as buscas. Organizados de forma hierarquica
 
 ## Capitulo 6
@@ -229,16 +229,16 @@ Varios dispositivos que precisam acessar um recurso, mas somente um pode acessar
 `Problema`: Alguns processos em um sistema distribuido querem acesso exclusivo a algum recurso
 
 _Solucoes_
-- *Baseado em permissao*: um processo que quiser entrar na secao critica(ou acessar um recurso) precisa da permissao de outros processos
+- **Baseado em permissao**: um processo que quiser entrar na secao critica(ou acessar um recurso) precisa da permissao de outros processos
 
-1. *Permissao: Centralizado*
+1. **Permissao: Centralizado**
 Node responsavel por dar a permissao: _coordenador_
   - Processo P1 pede permissao ao coordenador para acessar o recurso compartilhado. Verificara na fila em sua memoria para verificar se alguem ja pediu, fila vazia -> permissao concedida
   - Processo P2 tambem quer acessar o recurso, coordenador sabe que P1 ja pediu -> recurso ja emprestado -> o coordenador nao responde, e coloca em sua fila quem pediu e nao deu(P2)
   - Quando P1 libera o recurso, avisa o coordenador, e o coordenador finalmente responde para P2 -> permissao concedida
   - _Possiveis problemas:_ Poderia acontecer de P1 nao entregar a mensagem liberando o recurso, poderia acontecer de o coordenador morrer. Poderia ter problema de escalabilidade de tamanho.
 
-2. *Permissao: Distribuido*
+2. **Permissao: Distribuido**
 O processo que precisa do recurso envia uma requisicao de permissao a todos os outros processos(inclusive para ele mesmo)
    - A resposta a permissao(denominada de ACK) é enviada quando:
      - O processo receptor nao tem interesse no recurso compartilhado ou
@@ -255,7 +255,7 @@ O processo que precisa do recurso envia uma requisicao de permissao a todos os o
      - P0: acessou e liberou o recurso, respondendo OK para P2
      - P2: 3 permissoes, pode acessar o recurso
 
-- *Baseado em tokens*: um token é passado entrer processos. Aquele processo que tiver o token pode entrar na secao critica ou passa-lo para frente quando nao tiver interessado.
+- **Baseado em tokens**: um token é passado entrer processos. Aquele processo que tiver o token pode entrar na secao critica ou passa-lo para frente quando nao tiver interessado.
   - Organizar os processos em anel logico e passar um token entre eles. Aquele que estiver token pode entrar na secao critica(se ele quiser) = overlay logica de conexoes
   - Anel:
     - Algum deles tem um token node 0
@@ -265,7 +265,7 @@ O processo que precisa do recurso envia uma requisicao de permissao a todos os o
   - Possiveis problemas: Se morre um node perde o token
   - Cenario de que nenhum node quer somente o 7, porque nao passar direto ao inves de ir de sucessor em sucessor?
 
-- *Descentralizado*:
+- **Descentralizado**:
 Assuma que todo recurso é replicado N vezes (para não ter SPoF, i.e., maior disponibilidade).
   - Cada replica está associada a seu próprio coordenador.
   - acesso requer a maioria dos votos de m > N/2 coordenadores. E nao esperar OK de todos
@@ -289,7 +289,7 @@ Eleicao de um node que vai ser responsavel por um grupo de node ou servico. Sele
 
 - Um algoritmo precisa que algum dos processos assuma o papel de coordenador. Como selecionar esse processo especial _dinamicamente_?
 
-- `OBS`: Em muitos sistemas o coordenador é escolhido manualmente(exemplo: servidores de dados). Isso leva a solucoes centralizadas *com um ponto unico de falha SPoF*
+- `OBS`: Em muitos sistemas o coordenador é escolhido manualmente(exemplo: servidores de dados). Isso leva a solucoes centralizadas **com um ponto unico de falha SPoF**
 - Perguntas:
   - Se um coordenador é escolhido dinamicamente, até que ponto
 podemos dizer que o sistema será centralizado e não distribuído? O lider que for responsavel por dar permissao na exclusao mutua, nesse momento sim é contralizado no lider. Se o lider morre nao pode parar o sistema, necessario que outro node se torne lider, esse processo é distribuido.
@@ -298,7 +298,7 @@ coordenador) é sempre mais robusto que uma solução centralizada/coordenada? M
 
 - Todos os processos possuem um id unico, p.e ip, porta 
 - Todos os processos conhecem os ids de todos os outros processos no sistema (mas eles não têm como saber se os nós estão funcionando ou não)
-- A *eleição significa identificar o processo de maior id* que está funcionando em um dado momento
+- A **eleição significa identificar o processo de maior id** que está funcionando em um dado momento
 
 #### Anel
 As prioridades –identificadores– dos processos são obtidas organizando-os em um anel (lógico). O processo com prioridade mais alta deve ser eleito como coordenador. 
@@ -308,7 +308,7 @@ de eleição ao seu sucessor. Se um sucessor estiver indisponível, a mensagem �
 Quando a mensagem voltar ao nó que iniciou, todos tiveram a chance de anunciar a sua presença. 
 - O nó que iniciou circula uma mensagem pelo anel com a lista de
 nós “vivos”. O processo com maior prioridade é eleito coordenador.
-- *Exemplo funcionamento*: anel de 0 a 7(id)
+- **Exemplo funcionamento**: anel de 0 a 7(id)
     (1) - (2) - (3) - (4)
      |                  |
     (0) - (7) - (6) - (5)
@@ -337,7 +337,7 @@ identificadores maiores que o seu: Pk+1, Pk+2,..., PN−1.
 trabalho de Pk termina.  O maior sempre ganha, por isso o nome de Bully “valentão”.
 4. O coordenador escolhido envia COORDINATOR a todos
 
-- *Exemplo funcionamento*: 8 nodes nao estao em anel, sem ordem
+- **Exemplo funcionamento**: 8 nodes nao estao em anel, sem ordem
   - Node 4 conhece todos os nodes maior que ele 5,6,7. Node 7 que morreu.
   - Se os nodes maiores existirem envia Election para 5,6,7, porem somente responde OK os 5,6 pois sao maiores que 4.
   - O node5 nao sabe se ele é lider, so sabe que o lider morreu, nao sabe quem
@@ -347,7 +347,7 @@ trabalho de Pk termina.  O maior sempre ganha, por isso o nome de Bully “valen
   - Node6 se torna o lider, e avisa todos os nodes com mensagem Coordinator. E agora serve para dar exclusao mutua de algum recurso
 - Note que aqui assumimos o caminho feliz, que a comunicacao é confiavel, TCP, mensagem sem demorar muito
 
-*Perguntas*
+**Perguntas**
 - _Posso usar eleição para exclusão mútua? Como?_
 Sim, em sistemas distribuídos é possível usar um algoritmo de eleição para implementar exclusão mútua, ou seja, garantir que apenas um processo por vez tenha acesso a um recurso compartilhado. Existem vários algoritmos de eleição que podem ser adaptados para esse propósito. Um exemplo comum é o algoritmo de eleição baseado em anéis (ring-based election).
 É importante ressaltar que os algoritmos de eleição devem ser projetados de forma que sejam tolerantes a falhas e evitem problemas como a formação de múltiplos líderes (co-líderes) ou a exclusão permanente de nós (deadlocks). Além disso, podem ser necessários mecanismos adicionais para lidar com falhas e partições na rede.
@@ -381,7 +381,7 @@ Em sistemas centralizados a definicao de horario nao é ambigua(um unico computa
 
 
 
-- *relogios atomicos*: em 1948 com a invencao do relogio atomico, passou a ser possivel medir o tempo com muito mais precisao. Custo elevado, somente empresas grandes.
+- **relogios atomicos**: em 1948 com a invencao do relogio atomico, passou a ser possivel medir o tempo com muito mais precisao. Custo elevado, somente empresas grandes.
 
 <u>UTC(Universal Coordinated Time): baseado em relogio atomico, media dos que existem no mundo</u>
 
@@ -389,13 +389,13 @@ O valor UTC é enviado via broadcast por satelite e por ondas curtas de radio. S
 
 Em sistemas distribuidos Precisao é diferente de acuracia.
 
-*Precisao*: O objetivo é tentar fazer com que o desvio entre dois relogios em quaisquer duas maquinas fique dentro de um limite especificado.
+**Precisao**: O objetivo é tentar fazer com que o desvio entre dois relogios em quaisquer duas maquinas fique dentro de um limite especificado.
 
-*Acuracia*: o quao defasado esta o seu relogio de uma hora verdadeira UTC, queremos manter o relogio limitado a um valor de acuracia.
+**Acuracia**: o quao defasado esta o seu relogio de uma hora verdadeira UTC, queremos manter o relogio limitado a um valor de acuracia.
 
 Sincronizacao dos relogios, podem ser uma associada a precisao e uma associada a acuracia
-1. *Sincronizacao interna*: manter a `precisao` dos relogios(somente entre eles)
-2. *Sincronizacao Externa*: manter a `acuracia` dos relogios(com o do mundo real)
+1. **Sincronizacao interna**: manter a `precisao` dos relogios(somente entre eles)
+2. **Sincronizacao Externa**: manter a `acuracia` dos relogios(com o do mundo real)
 
 
 > [Slides 8-13, nao tem no video - Relógios Físicos: ajuste de horários] - pedir ajuda
@@ -422,17 +422,17 @@ Algoritmo de Berkeley: permita o servidor de hora(referencia de mais preciso) so
 
 - Nota: Você terá todas as máquinas em sincronia entre 20 e 25 ms. Você nem precisa propagar o horário UTC (Universal Coordinated Time, horário real medido em 50 relógios atômicos no mundo).
 
-> É *fundamental*: saber que atrasar o relógio `nunca` é permitido. Você deve fazer ajustes suaves. Na sincronização de relógios em sistemas distribuídos, geralmente é evitado atrasar o relógio porque atrasos excessivos podem causar problemas de `consistência` e sincronização inadequada entre os diferentes componentes do sistema.
+> É **fundamental**: saber que atrasar o relógio `nunca` é permitido. Você deve fazer ajustes suaves. Na sincronização de relógios em sistemas distribuídos, geralmente é evitado atrasar o relógio porque atrasos excessivos podem causar problemas de `consistência` e sincronização inadequada entre os diferentes componentes do sistema.
 > Por exemplo entao se voce ta adiantado, nao vai atrasar o relogio, mas sim fazer com que o proximo segundo demore mais a duracao, para sincronizar
 
-*Funcionamento:*
+**Funcionamento*:*
 - 3 Servidores, S1 horario mais preciso ts=3:00 e contem o daemon, envia o horario mais preciso para os outros 2 servidores
 - S2 e S3 enviam quao atrasados e adiantados estao em relacao a S1, exemplo S2 -10, S3 +25
 - O daemon S1 faz os calculos e chegam a conclusao de que todos deveriam ter 3:05 e manda o quanto precisa cada um ajustar para chegar nesse horario. mudancas graduais
 
 
 ### Relogios Logicos
-O que importa na maior parte dos sistemas distribuídos não é fazer com que todos os processos concordem com a hora exata (e.g., como NTP), mas sim fazer com que eles concordem com a *ordem* em que os eventos ocorreram.
+O que importa na maior parte dos sistemas distribuídos não é fazer com que todos os processos concordem com a hora exata (e.g., como NTP), mas sim fazer com que eles concordem com a **ordem** em que os eventos ocorreram.
 - Ou seja, precisamos de uma noção de ordem entre os
 eventos.
 
@@ -464,7 +464,7 @@ Observações:
 tempo (concorrente). _Desempate usando os IDs dos processos criam uma ordem TOTAL dos eventos_. Sem isso, é ordem parcial.
 
 
-*Exemplo*
+**Exemplo**
 3 processos com contadores de eventos funcionando em velocidades diferentes
 P1: de 6 em 6
 P2: de 8 em 8
@@ -491,7 +491,7 @@ Exemplo se P3 60 manda mensagem m3 pra P2 56, 56 < 60, ai 56 vira 60+1 = P2 61, 
   (2) todos os acknowledgements foram recebidos para mi
 - Assumimos que a comunicação é confiável(TCP) e que a ordem FIFO (entre as mensagens enviadas por um processo) é respeitada.
 
-*Exemplo - Funcionamento*
+**Exemplo - Funcionamento**
 Fila1 P1        Fila2 P2
 - Fila ordenada por prioridade(mais acima mais prioridade)
 - P1 quer enviar a mensagem de adicionar 100 reais na conta, m1
@@ -517,7 +517,7 @@ Fila1 P1        Fila2 P2
 - Quando P1 processa m1, pode enviar ACK(m2,P2,2)
 - Quando P2 recebe ACK(m2) -> Processa m2
 
-*o algoritmo de multicast funciona?*
+**o algoritmo de multicast funciona?**
 - se uma mensagem m ficar pronta em um processo S, m foi recebida por todos os outros processos (que enviaram ACKs dizendo que m foi recebida)
 - se n é uma mensagem originada no mesmo lugar que m e for enviada antes de m, então todos receberão n antes de m e n ficará no topo da fila antes de m (pela ordem FIFO)
 - se n for originada em outro lugar que m é um pouco mais complicado. Pode ser que m e n cheguem em ordem diferente em S, mas é certeza de que antes de tirar um deles da fila, S terá que receber os ACKs de todos os outros processos, o que permitirá comparar os valores dos relógios e repassar à aplicação as mensagens na ordem total
@@ -551,26 +551,26 @@ Cada processo tem um relogio, lamport ja tinha, mas agora vetor em que cada slot
     - Evento a aconteceu antes de b? 1 <= 1 | 2 <= 2 | 1 <= 2 = SIM aconteceu antes de b
 
 
-*gerenciamento no middleware*
+**gerenciamento no middleware**
 1. antes da execução de um evento, Pi executa VCi [i] ← VCi [i] + 1 [Igual lamport aqui]
 2. antes do processo Pi enviar uma mensagem m para Pj , ele define o timestamp (no vetor) de m, ts(m), como VCi (após executar o passo 1, registrando assim o envio)
 3. no recebimento de uma mensagem m, o processo Pj define VCj [k] ← max{VCj [k], ts(m)[k]} para todo k e executa o passo 1 (registrando assim o recebimento) Maximo do que eu conheco dentro do vetor e ts da mensagem
 
 > Muito similar à regra do relógio lógico de Lamport, porém específica para cada processo
 
-*Exemplo funcionamento*
+**Exemplo funcionamento**
 [Imagem]
 Cenarios; causal, conflitar, 
 
 
-*Exercicios*
+**Exercicios**
 [Fazer]
 
 
 #### Relógios vetoriais: Multicast de Ordem Causal
 Ideia: Garantir que uma mensagem seja repassada (à aplicação) somente se todas as mensagens que as precederem por causalidade tiverem sido repassadas.
 
-- Multicasts *ordenados por causalidade* são menos restritivos do
+- Multicasts **ordenados por causalidade** são menos restritivos do
 que multicasts com ordem total. Se duas mensagens não tem uma relação causal, então a ordem que elas serão repassadas (delivered) pode ser diferente para cada um dos processos.
 
 Por exemplo m1 enviado antes de m2, mas m2 chega antes nesse caso m2 sera postergada ate m1 ser enviado e recebido.
@@ -588,11 +588,11 @@ _O relógio será ajustado somente quando enviar ou repassar uma mensagem m (e n
       - ts(m)[i] = VCj [i] + 1. (m é a próxima msg que Pj espera de Pi )
       - ts(m)[k] ≤ VCj [k] para k != i. (Pj já repassou todas as mensagens Pi que repassou)
 
-*EXEMPLO:*
+**EXEMPLO:**
 [REVER]
 
 
-*EXERCICIO:*
+**EXERCICIO:**
 Tome VC3 = [0, 2, 2], ts(m) = [1, 3, 0] vinda de P1. Que informação P3 tem antes de receber m e o que ele irá fazer quando receber m ?
 [REVER]
 
@@ -602,7 +602,7 @@ Tome VC3 = [0, 2, 2], ts(m) = [1, 3, 0] vinda de P1. Que informação P3 tem ant
 - Alto desempenho para 99% das requisições: acesso a dados em < 300ms em 2007 (10 mssegundo o site em 2019)
 - Alta disponibilidade, _consistência eventual_
 
-*Consistencia*: A consistência é obtida por versionamento (com relógios vetoriais).
+**Consistencia**: A consistência é obtida por versionamento (com relógios vetoriais).
 - O objetivo fundamental do design é: “writes are never rejected”
 - Nota: writes em diferentesservidores (ao mesmo tempo) podem
 gerar inconsistências.
