@@ -317,7 +317,7 @@ Em muitos casos, o conjunto de dados envolvidos em uma transação está distrib
 Imagine um cliente que quer usar um modelo transacional, uma transacao com varios outros servidores banco de dados. TP monitor, realmente monitora as requests.
 
 | Application -Request-> TP monitor -Manda o Request-> Servidores(DB)
-[IMAGEM]
+![LOOKUP](imagens/tpmonitor.png)
 
 Esses servidores podem ser aplicacoes de diferentes empresas, por exemplop hotel e passagem
 
@@ -327,7 +327,7 @@ Situacao: as organizacoes possuem diversas aplicacoes muitas delas sem interoper
 `A solucao basica` para isso seria o monitor comentado acima, que combinaria as requisicoes das aplicacoes em um servidor, quem realizara o envio e coleta das respostas, apresentando um resultado coerente para o cliente.
 
 Mas as vezes precisamos fazer `comunicacao diretas`, e o TP MONITOR nao basta, sem um intermediario -> **Enterprise Application Integration** == MIDDLEWARE de comunicacao. Permitindo nao somenta a comunicacao de um cliente com os servidores, mas cliente entre cliente atraves do middleware. Exemplo: RPC, MOM(Middleware orientado a mensagens)
-[IMAGEM]
+![LOOKUP](imagens/tpmonitor2.png)
 
 <u>Como integrar as apps?</u>
 
@@ -406,8 +406,8 @@ Um estilo é definido em termos de: componentes substituiveis com interfaces bem
 - Ideia basica: organize os componentes `logicamente diferentes` e os distribua entre as maquinas disponiveis. Cada camada com sua responsabilidade
 - Esse estilo é usado em sistemas cliente-servidor
 - Outro exemplo poderia ser camada de IU, camada de processamento, camada de dados. Nao existe uma comunicacao direta entre IU e DB, interface bem definida que mantem uma ordem e organizacao das camadas.
-[IMAGEM-EX1]
-[IMAGEM-EX2]
+![EXcAMADAS1](imagens/EXcAMADAS1.png)
+![exCamadas2](imagens/exCamadas2.png)
 
 2. **Arquiteturas baseadas em objetos**
 - Ideia basica: organize os compodentes `logicamente diferentes` e os distribua entre as maquinas disponiveis.
@@ -415,18 +415,17 @@ Um estilo é definido em termos de: componentes substituiveis com interfaces bem
 - **Encapsulamento**: Os objetos ficam distribuídos pelo sistema (servidores). Apesar do usuário fazer chamadas que são equivalentes a chamadas locais, elas podem estar sendo feitas em `objetos remotos`(em outras maquinas)-> por meio de _Proxy_ que tem as informacoes basicas e necessarias para comunicacao com outra maquina.
 - Comunicacao entre objetos por meio de conectores e interfaces bem definidas
 - mais complexo que o de camadas que tem comunicacao unidirecional
-[IMAGEM-EX1]
-[IMAGEM-EX2]
+![exObjeto1](imagens/exObjeto1.png)
+![exObjeto2](imagens/exObjeto2.png)
 
-3. **Arquiteturas baseadas em eventos e dados**
+1. **Arquiteturas baseadas em eventos e dados**
 - Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico).
 - (a)Publish/subscribe[`desacoplado na referencia`](ANONIMOS), subscribes precisam estar online
 - Uso de event bus que nao depende de IP e porta, tem seus proprios identificadores unicos.
 - (b)Espaço de dados compartilhados [`desacoplado na ref(ANONIMOS). e tempo`(ASSINCRONOS)]
 
-[IMAGEM (a)]
-[IMAGEM (b)]
-[EXEMPLO b]
+![arqEventos](imagens/arqEventos.png)
+
 
 4. **Arquiteturas centradas em recursos - dados compartilhados**
 Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico) e tempo(assincronos). Isso significa que a mensagem nao precisa que o subscribe esteja online, pois persiste o dado e aguarda no middleware ate que apareca alguem online.
@@ -445,7 +444,7 @@ Vê um sistema distribuído como uma coleção de recursos gerenciados individua
 | POST | modifica um recurso ao transferir um novo estado |
 
 Exemplo: operacoes GET e PUT em um bucket S3: `Objetos`(arquivos) sao armazenados em `buckets`(diretorios).
-
+![LOOKUP](imagens/dadoscompart.png)
 #### Arquiteturas de Software
 
 1. Arquiteturas centralizadas
@@ -454,9 +453,10 @@ Exemplo: operacoes GET e PUT em um bucket S3: `Objetos`(arquivos) sao armazenado
    - Existem processos que `usam esses servicos` (Clientes)
    - Clientes e Servidores podem estar em maquinas diferentes
    - Clientes seguem um modelo de requisicao/resposta ao usar os servicos
-[imagem]
+![LOOKUP](imagens/arqCentralizada1.png)
+![LOOKUP](imagens/arqcentralizada.png)
 
-2.  Arquiteturas multicamadas (`multidivididas`)
+1.  Arquiteturas multicamadas (`multidivididas`)
 Visao tradicional em 3 camadas `logicas`
 - A `camada de apresentacao(user interface - UI)` contem o necessario para a aplicacao poder interagir com o usuario
 - A `camada de negocio(application)` contem as funcoes de uma aplicacao
@@ -500,10 +500,10 @@ estrutura de dados distribuída específica - Amazon DynamoDB
    
 - **P2P HIBRIDO**: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (`edge-servers`), utilizados com frequência como `Content Delivery Networks` (redes de distribuição de conteúdo).
   - _Ideia basica_: Assim que um node indentifica de onde o arquivo sera baixado, ele se junta a uma swarm(multidao) de pessoas que, _em paralelo_, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
-[IMAGEM CDN]
+![cdn](imagens/arqHibrida.png)
 
 - Exemplo: C-S com P2P - BitTorrent: Assim que um node identifica de onde o arquivo sera baixado, ele se junta a uma `swarm` de pessoas que, `em paralelo`, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
-[IMAGEM bITTORRENT]
+![ArqHibridBittorrent](imagens/ArqHibridBittorrent.png)
 
 | Praticamente todos os casos de arquitetura de software são exemplos de `redes overlay`: dados são roteados usando conexões definidas pelos nós
 
@@ -524,7 +524,7 @@ Interceptam o fluxo de controle normal quando um `objeto remoto` for invocado.
 App Cliente -Request method-> Object middleware -Request-> SO -Request-> Another machine
 Ou seja nesse caso o middleware nao faz nada, mas poderia usar interceptors que vao modificar o comportamento adicionando por exemplo replicacao, seguranca. O interceptor _pode estar entre o cliente e o middleware, e tambem entre o middleware e o SO._
 
-[imagem interceptors]
+![interceptor](imagens/interceptor.png)
 
 #### Sistemas Distribuídos autogerenciáveis
 
@@ -537,7 +537,7 @@ Sistemas e arquiteturas de software que consideram a `adaptacao automatica` do s
 *Modelo de regulacao por feedback*
 Em muitos casos, sistemas auto-* são organizados como um `sistema de regulação por feedback`. Precisa de metricas para ajustar.
 
-[iMAGEM]
+![LOOKUP](imagens/feedback.png)
 
 Por exemplo sistema com uma configuracao inicial, que passa para o sistema distribuido. Esse sistema tem uns ruidos incontrolaveis, e esse comportamento observado serve como metrica para estimar e analisar pelo proprio sistema.
 Com isso tem-se estrategias dependendo do funcionamento.
