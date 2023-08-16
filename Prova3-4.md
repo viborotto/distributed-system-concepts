@@ -227,35 +227,35 @@ Desvantagens:
 - viola a transparencia
 
 > Em muitos SDs a interface de mais baixo nivel é a de transporte     
-> **camada de transporte**: é importante por fornecer as ferramentas de comunicacao efetivamente utilizadas pela maioria dos sistemas distribuidos
+> **camada de transporte**: `é importante por fornecer as ferramentas de comunicacao efetivamente utilizadas pela maioria dos sistemas distribuidos`
 
 Protocolos padroes na internet:
 - TCP: orientada a conexao, confiavel, comunicacao orientada a fluxo de dados
 - UDP: comunicacao de datagramas nao confiavel(best-effort)
 
-Ip multicasting é normalmente considerado um servico padrao mas é uma hipotese perigosa
+`Ip multicasting é normalmente considerado um servico padrao mas é uma hipotese perigosa`
 
 **Camada de middleware**
 Acima da camada de transporte
-- Prover servicoes e protocolos frequentemente usados que podem ser utilizados por varias aplicacoes diferentes
-- Um conjunto rico de protocolos de comunicacao
-- Desempacotamento de dados, necessarios para a integracao de sistemas
-- protocolos de gerenciamento de nomes, para auxiliar o compartilhamento de recursos
-- Protocolos de seguranca para comunicacoes seguras
-- mecanismos de escalabilidade como replicacao e caching
+- Middleware foi inventado para Prover servicos e protocolos `frequentemente usados` que podem ser utilizados por varias aplicacoes `diferentes`
+- Um conjunto rico de `protocolos de comunicacao`
+- `(Des)empacotamento` de dados, necessarios para a integracao de sistemas
+- `protocolos de gerenciamento de nomes`, para auxiliar o compartilhamento de recursos
+- `Protocolos de seguranca` para comunicacoes seguras
+- `mecanismos de escalabilidade` como replicacao e caching
 
-Tirando esses protocolos o unico outro que teremos é o protocolo especificos de aplicacao
+Tirando esses protocolos o unico outro que teremos é o protocolo especificos de aplicacao.
 
 #### *Tipos de comunicacao*
 
-Cliente manda uma requisicao para o servidor, mas primeiro quem recebe eé o middleware, o midleware armazena a mensagem caso caia a conexao antes de mandar para o servidor. O middleware avisa o cliente que recebeu a mensagem(1). Apos isso o middlware manda a mensagem para o servidor que por sua vez responde ao cliente que recebeu a mensagem(2), logo o cliente sabe o servidor esta processando a mensagem. (3) Depois de processar a mensagem o servidor responde e essa resposta tbm fica armazenada no middleware caso caia a conexao, e apos isso envia para o cliente a resposta do servidor.
+Cliente manda uma requisicao para o servidor, mas primeiro quem recebe é o middleware, o middleware armazena a mensagem caso caia a conexao antes de mandar para o servidor. O middleware avisa o cliente que recebeu a mensagem(1). Apos isso o middlware manda a mensagem para o servidor que por sua vez responde ao cliente que recebeu a mensagem(2), logo o cliente sabe o servidor esta processando a mensagem. (3) Depois de processar a mensagem o servidor responde e essa resposta tbm fica armazenada no middleware caso caia a conexao, e apos isso envia para o cliente a resposta do servidor.
 
 1. **Transiente vs Persistente**
    - Isso de armazenar a request e response no middleware torna a comunicacao persistente, caso contrario seria transiente
    - `Transiente`: remetente descarta a mensagem se ela nao puder ser encaminhada ao destinatario
    - `Persistente`: uma mensagem é guardada no remetente pelo tempo que for necessario, ate ser entregue no destinatario
 2. **Assincrona vs Sincrona**
-   - pontos de sincronia: no envio da requisicao e na entrega(quando avisa o cliente 1 e 2) ASSINCRONO. Apos o processamento da requisicao(3) seria o SINCRONO
+   - pontos de sincronia: no envio da requisicao e na entrega(quando avisa o cliente 1 e 2) `ASSINCRONO`. Apos o processamento da requisicao(3) seria o `SINCRONO`
 
 ### Comunicacao orientada a procedimento RPC
 
@@ -299,7 +299,7 @@ Cliente espera a resposta do resultado; precisa de uma interrupcao cliente e avi
 
 _Variacao_: Cliente pode realizar uma consulta poll(bloqueante ou nao) para verificar se os resultados estao prontos, e so assim quando estiver pronto envia a resposta ao cliente
 
-> O que acontece quando varios clientes acessam o metodo? Depende da implementacao, mas normalmente utiliza-se o **modelo dispatcher/worker**. Ou seja cada requisicao do cliente é atendida por uma thread diferente. Isso quer dizer que é necessario proteger as variaveis e estruturas de acesso concorrentes.
+> O que acontece quando varios clientes acessam o metodo? Depende da implementacao, mas normalmente utiliza-se o **modelo dispatcher/worker**. Ou seja cada requisicao do cliente é atendida por uma thread diferente. `Isso quer dizer que é necessario proteger as variaveis e estruturas de acesso concorrentes.`
 
 
 *********[COMO ESTUDAR A IMPLEMENTACAO JAVA?]*********
@@ -307,7 +307,7 @@ _Variacao_: Cliente pode realizar uma consulta poll(bloqueante ou nao) para veri
 ### Comunicacao orientada a mensagem MOM
 
 Um tipo de middleware.
-<u>Comunicacao assincrona(desacoplado na referencia) e persistente</u> gracas ao uso de filas pelo middleware.
+- Comunicacao `assincrona(desacoplado na referencia)` e `persistente` gracas ao uso de `filas` pelo middleware.
 
 > Filas: buffers em servidores de comunicacao
 
@@ -323,11 +323,13 @@ Um tipo de middleware.
 
     _Gerenciadores de filas_: filas sao gerenciadas pelos `queue managers`. Uma aplicacao insere mensagens em uma fila local. Obter uma mensagem é possivel extraindo-a tambem da fila local somente queue managers precisam de roteamento(se estiver em outra maquina, overlay)
 
-Sistemas de filas assumem um protocolo comum de troca de mensagens: todas as apps usam o mesmo formato de mensagem(i.e estrutura e representacao de dados)
+Sistemas de filas assumem um `protocolo comum de troca de mensagens`: todas as apps usam o mesmo formato de mensagem(i.e estrutura e representacao de dados)
 
 - **Message broker**: componente centralizado que lida com heterogeneidade das aplicacoes(intermedia entre aplicacoes independentes e nao relacionadas)
   - Transforma as mensagens recebidas para o formato apropriado
   - Frequentemente funciona como um application gateway(ou seja a aplicacao nao precisa fazer parte do middleware)
+  - `Mensagens especificas da aplicacao` sao colocadas e removidas de `filas`
+  - As filas sao controladas por um `gerenciador de filas`(p.e `um broker`)
   - podem rotear com base no conteudo = Enterprise Application Integration. Por exemplo nao somente analisa o IP e porta de destino onde tem que enviar, mas tambem o conteudo por exemplo se for sobre esportes direciona para o certo processo.
   
 - Exemplos
@@ -336,6 +338,8 @@ Sistemas de filas assumem um protocolo comum de troca de mensagens: todas as app
     - `Modelo ponto a ponto(queue)`: Cliente1 envia uma mensagem para uma fila e quando algum client2 se conecta vai consumir a mensagem da fila, porem somente um dos consumidores vai consumir a mensagem. Pode ser importante quando tem uma tarefa e so precisa que um consumidor realize a tarefa.
     - `Modelo Pub/Sub`: espaco de dados compartilhados, todos os componentes inscritos na fila recebe a mesma mensagem. Topico é a fila que todos os subs recebem. O producer enviar uma mensagem para o topico e todos com consumers que estao escutando recebem a mensagem
 
+[IMAGEM COMPARATIVO - VANTAGENS E DESVANTAGENS]
+
 ### RPC vs MOM
 A comunicação orientada a mensagem (MOM - Message-Oriented Middleware) e a comunicação por RPC (Remote Procedure Call) são duas abordagens distintas para facilitar a comunicação entre sistemas distribuídos. Vamos destacar as principais diferenças entre elas:
 
@@ -343,15 +347,15 @@ A comunicação orientada a mensagem (MOM - Message-Oriented Middleware) e a com
 * RPC: O RPC segue o paradigma de comunicação cliente-servidor, onde um cliente faz uma chamada de procedimento em um servidor remoto, aguardando a resposta do servidor. A comunicação é baseada na invocação direta de funções ou procedimentos entre os sistemas.
 * MOM: A comunicação orientada a mensagem não está restrita ao modelo cliente-servidor. Nesse paradigma, os sistemas trocam mensagens assincronamente através de uma camada intermediária (middleware), sem a necessidade de saber a identidade do destinatário ou mesmo se o destinatário está ativo no momento da comunicação.
   
-1. Comunicação Assíncrona vs. Síncrona:
+2. Comunicação Assíncrona vs. Síncrona:
 * RPC: A comunicação por RPC é síncrona, ou seja, o cliente aguarda a resposta do servidor antes de prosseguir com a execução. Enquanto a chamada de procedimento estiver em andamento, o cliente fica bloqueado.
 * MOM: A comunicação orientada a mensagem é assíncrona. As mensagens são enviadas para uma fila de mensagens (ou tópico) e podem ser lidas por múltiplos destinatários quando estiverem disponíveis. Não há bloqueio esperando por uma resposta imediata.
   
-1. Dependência Direta:
+3. Dependência Direta:
 * RPC: No RPC, o cliente precisa conhecer a interface e a localização do servidor com o qual deseja se comunicar. É uma abordagem mais direta e acoplada.
 * MOM: Na comunicação orientada a mensagem, o remetente da mensagem não precisa conhecer os detalhes específicos do destinatário. Ele envia a mensagem para um tópico ou fila, e o middleware é responsável por encaminhá-la para os destinatários apropriados. Isso promove um desacoplamento entre os sistemas.
  
-1. Padrão de Mensagens:
+4. Padrão de Mensagens:
 * RPC: As mensagens em RPC geralmente incluem a identificação do procedimento a ser chamado e os parâmetros da função. A resposta pode incluir o resultado da chamada do procedimento.
 * MOM: As mensagens na comunicação orientada a mensagem podem ser estruturadas de várias maneiras. Elas podem conter informações sobre o conteúdo da mensagem, ação a ser executada ou qualquer outra informação relevante.
 
@@ -367,24 +371,23 @@ Node que quer disseminar informacoes para diversos nodes de um _mesmo grupo_.
 _Multicast de nivel de aplicacao(ALM):_
 Organizar os nodes de um SD em uma rede overlay e usa-la para disseminar os dados. Caso de uso: 3 nodes(compoem o middlware), um cliente faz uma atualizacao em um node e o ideal seria replicar em todos os nodes.
 - Geralmente em uma arvore levando a caminhos unicos. Ou em uma _rede mesh_(sem estrutura, pode ser atraves dos vizinhos, porem pode ter uma duplicacao pois nao tem uma raiz unica) mas precisa de roteamento
+ 
+Broadcast: camada de rede e enlace  
 
-
-Broadcast: camada de rede e enlace
-
-O multicast pode ter diferentes configuracoes de ordem.
+O multicast pode ter diferentes configuracoes de ordem.   
 
 #### Ordem FIFO
-_Se um processo P envia mensagens M1 e depois M2, todos os processos entregarao primeiro M1 antes de M2._
+_Se um processo P envia mensagens M1 e depois M2, todos os processos `entregarao` primeiro M1 antes de M2._
 - No middleware:
     - Receber: nao ha controle sobre o que se recebe pela camada de rede
     - Entregar/repassar: apos receber a mensagem, voce controla o que fazer com ela, por exemplo entregar para o banco de dados e fazer o update
   
 #### Ordem Causal
-Se uma mensagem M1 _precede causalmente_ M2, todos os processos entregarao primeiro M1 antes de M2.
+Se uma mensagem M1 `precede causalmente` M2, todos os processos `entregarao` primeiro M1 antes de M2.
 Note que não depende do processo origem que enviou o multicast.
 
 #### Ordem Total
-_Se um processo entrega m1 antes de m2, todos os processos entregarão nessa mesma ordem._
+Se um processo `entrega` m1 antes de m2, todos os processos `entregarão` nessa mesma ordem.
 
 ### Disseminacao de dados
 
@@ -400,7 +403,7 @@ _Se um processo entrega m1 antes de m2, todos os processos entregarão nessa mes
 
 
 #### Gossip/Flooding
-Node P envia uma mensagem M a seus vizinhos via _gossiping_. Cada vizinho a re-envia (via _flooding_ se nao a viu antes)
+Node P envia uma mensagem M a seus vizinhos via _gossiping_. Cada vizinho a re-envia (via `flooding` se nao a viu antes)
 - Desempenho: maior a quantidade de conexoes mais caro fica
 - um node S com uma atualizacao a disseminar, contata outros nodes. Se o node contatado ja possui a atualizacao, S para de contatar outros nodes com probabiliadade pstop.
 - Gossip pode faltar um a receber, anti-entropy nao.
@@ -433,9 +436,9 @@ Node N #node, thread, ou processo
 
 #### Anti-entropy
 - Um node P seleciona outro node Q do sistema aleatoriamente
-- _Pull_: P somente pede novas atualizacoes de Q
-- _Push_: P somente envia novas atualizacoes a Q, sem Q ter pedido
-- _Push-pull_: P e Q enviam atualizacoes um ao outro. `O(log N)` rodadas para disseminar as atualizacoes nos n NODES
+- `Pull`: P somente `pede` novas atualizacoes de Q
+- `Push`: P somente `envia` novas atualizacoes a Q, sem Q ter pedido
+- `Push-pull`: P e Q enviam atualizacoes um ao outro. `O(log N)` rodadas para disseminar as atualizacoes nos n NODES. `rodada`: quando cada node tomou a iniciativa de iniciar o intercambio
 
 
 ### Multicast vs PuBsUB
@@ -462,26 +465,26 @@ Tanto a comunicação multicast quanto o modelo pub/sub são utilizados para dis
 
 
 ### Comunicacao orientada a fluxo(streams)
-- **Suporte para midia continua**(caracterizada por ter valores dependentes do tempo), podem ser sensores que mandam informacoes continuas, audio, video, animacoes
-  - Toda comunicacao apresentada foi baseada em um intercambio de informacao discreto e independente do tempo
+- **Suporte para midia continua**(caracterizada por ter valores `dependentes do tempo`), podem ser sensores que mandam informacoes continuas, audio, video, animacoes
+  - Toda comunicacao apresentada foi baseada em um intercambio de informacao `discreto e independente do tempo`
   - Transmitir informacoes com diferentes garantias de tempo:
     - `Assincrona`: sem restricoes de quando o pacote deve ser entregue
     - `Sincrona`: define um delay(end-to-end) maximo para a entrega do pacote
-    - `Isochronous`: define um delay maximo e minimo para a entrega do pacote(jitter)
+    - `Isochronous`: define um delay maximo e minimo para a entrega do pacote(`jitter`)
   
 - **Fluxo em sistemas distribuidos**
-Um fluxo continuo de dados é uma comunicacao orientada a conexao que suporta transmissao de dados _Isochronous_
+Um fluxo continuo de dados é uma comunicacao orientada a conexao que suporta transmissao de dados `Isochronous`
   - Fluxos sao unidirecionais
-  - Geralmente uma unica fonte de informacao
-  - Fluxo simples: unico fluxo de dados por exemplo audio OU video
-  - Fluxo completo multiplos fluxos de dados, audio E video
+  - Geralmente uma `unica fonte` de informacao
+  - `Fluxo simples`: unico fluxo de dados por exemplo audio OU video
+  - `Fluxo complexo`: multiplos fluxos de dados, audio E video
     
 - **Qualidade de servico(QoS)**
   - Dependendo do dispositivo muda a qualidade
-  - Bit rate: requerido no transporte
-  - Delay máximo até criar a sessão (i.e., quando a aplicação pode começar a enviar dados).
-  - Delay máximo do jitter
-- Os pacotes podem ser priorizados por ferramentas inseridas na camada de rede(buffers por exemplo)
+  - `Bit rate`: requerido no transporte
+  - `Delay máximo` até criar a sessão (i.e., quando a aplicação pode começar a enviar dados).
+  - `Delay máximo` do jitter
+- Os pacotes podem ser `priorizados` por ferramentas inseridas na camada de rede(buffers por exemplo)
 - Problema
-    - Como reduzir o efeito de pacotes perdidos usando UDP (quando múltiplos quadros estão em um mesmo pacote)?
+    - Como reduzir o efeito de pacotes perdidos usando UDP (quando `múltiplos quadros estão em um mesmo pacote`)?
       - > Retransmissão seletiva, onde o receptor solicita apenas os quadros perdidos em um pacote. 
