@@ -27,16 +27,16 @@
 
 ### Definicao de Sistemas Distribuidos
 
-Um sistema distribuido é um **sistema de software** que garante uma `colecao de elementos de computacao autonomos` que sao vistos pelos usuarios como um sistema _unico e coerente_
+Um sistema distribuido é um **sistema de software** que garante uma `colecao de elementos de computacao autonomos` que sao vistos pelos usuarios como um `sistema unico e coerente`
 
 def `colecao de elementos de computacao autonomos`: 
-    - _Comportamento independente_ cada node e autonomo e portanto tem sua propria percepcao de tempo, <u>nao ha um relogio global</u>. 
+    - _Comportamento independente_ cada node e autonomo e portanto tem sua `propria percepcao de tempo`, <u>nao ha um relogio global</u>. 
     - Leva a problemas de sincronizacao e de coordenacao.
     - _Colecao de nos_: como gerenciar associacoes em grupos; como saber se voce realmente esta se comunicando com um nao membro autorizado do grupo, que seja confiavel em passar infos corretas e atualizadas.
 
 #### Caracteristicas
 * Elementos de computacao autonomos, chamados de nodos, seja dispositivos de hardware ou processos de software
-* Sistema unico e coerente: ususarios ou aplicacoes veem um unico sistema(nodes colaboram entre si)
+* Sistema unico e coerente: ususarios ou aplicacoes veem um unico sistema(`nodes colaboram entre si`)
 
 
 ### Overlay e Middleware
@@ -44,19 +44,19 @@ def `colecao de elementos de computacao autonomos`:
 #### Organizacao
 
 **Redes de overlay**
-Cada node na colecao se comunica apenas com nos do sistemas, seus vizinhos. O conjunto de vizinhos pode ser dinamico(saida e entrada de nos, dinamicamente) ou pode ser descoberto de forma implicita(nos ja comunicando, entra um nó que descobre a colecao por meio de um nó, e ai passa a fazer parte da colecao). `Nao necessariamente estao associados a estrutura fisica`, comunicacao logicamente entre os nos.
+Cada node na colecao se comunica apenas com nos do sistemas, seus `vizinhos`. O conjunto de vizinhos pode ser dinamico(saida e entrada de nos, dinamicamente) ou pode ser descoberto de forma implicita(nos ja comunicando, entra um nó que descobre a colecao por meio de um nó, e ai passa a fazer parte da colecao). `Nao necessariamente estao associados a estrutura fisica`, comunicacao logicamente entre os nos.
 
 Esse overlay fica acima da camada fisica dos roteadores, sobreposta, podendo ser em formato de anel(Estruturadas) com nodes antecessores e sucessores.
 
 
 **Tipos de overlay**
-Um exemplo bem conhecido de redes de overlay: sistemas p2p. A falha de um peer nao compromete o funcionamento do sistema.
+Um exemplo bem conhecido de redes de overlay: `sistemas p2p`. A falha de um peer nao compromete o funcionamento do sistema.
 
 1. **Estruturada**
-  Cada node tem um <u>conjunto bem definido</u> de vizinhos com os quais pode se comunicar(arvore, anel). Exemplo: Amazon Cloudfront - arvore
+  Cada node tem um `conjunto bem definido` de vizinhos com os quais pode se comunicar(arvore, anel). Exemplo: Amazon Cloudfront - arvore, anel
 
 2. **Não Estruturada**
-    Cada node tem referencias a um conjunto <u>aleatoriamente</u> selecionado de outros nos no sistema. Exemplo: Stremio
+    Cada node tem referencias a um `conjunto aleatoriamente selecionado` de outros nos no sistema. Exemplo: Stremio
 
 
 #### Sistema Coerente
@@ -65,11 +65,12 @@ A colecao de nos _opera sempre da mesma forma_, nao importando onde, quando ou c
 - O usuario nao consegue dizer onde a computacao esta acontecendo(p.e quando vc usa o google vc nao sabe em qual maquina acontece, isso é transparente)
 - Onde especificamente os dados estao armazenados deveria ser irrelevante para a aplicacao
 - O dado ser ou nao replicado deveria estar completamente escondido
-= `transparencia da distribuicao` = visao unica
+ = `transparencia da distribuicao` = visao unica. Em transparencia de distribuicao temos os seguintes tipos: Localizacao(Esconder onde o objeto esta localizado), Replicacao(Esconder que um objeto esta sendo replicado), Falhas(Esconder falhas e possivel recuperacao de um objeto)
 - Exemplo ao conectar comm nos de um mesmo sistema nao pode ter uma informacao desartualizado, precisa estar coerente.
 
-O problema: falhas parciais
-É inevitavel que a qualquer momento _um pedaco do sistema distribuido falhe_. esconder essas falhas parciais e sua recuperacao normalmente é muito dificil(em geral, impossivel)
+_O problema: falhas parciais_
+É inevitavel que a qualquer momento _um pedaco do sistema distribuido falhe_. esconder essas falhas parciais e sua recuperacao normalmente é muito dificil(em geral, impossivel).   
+Motivo: devido à natureza complexa e em sua maioria assíncrona desses sistemas. As falhas podem ocorrer em diversos componentes de forma imprevisível, dificultando sua detecção e tratamento uniforme. A falta de sincronização global torna complicada a garantia de que todas as partes envolvidas estejam cientes das falhas e da recuperação. Além disso, a coordenação entre os diferentes nós para retomar o funcionamento normal pode ser problemática devido à comunicação intermitente e à possibilidade de múltiplas falhas ocorrendo simultaneamente. Portanto, a transparência completa na ocultação de falhas e recuperação é desafiadora em sistemas distribuídos.
 
 **Middleware: o SO dos SD**
 
@@ -100,13 +101,13 @@ Um dos problemas mais complexos para desenvolvedores de SD.
 
 **Tipos de Transparencia:**
 
-* `Acesso`: Varios nodes, entao nao pode acontecer por exemplo de um node ter uma arvore de inteiro, e o outro uma arvore de float(o usuario nao precisa saber das diferencas entre as representacoes de dados, deve ser transparente). E nao interessa ao usuario, nao deve saber tambem COMO e ONDE esta sendo chamado os outros nodes, pois precisa ser um sistema unico(mecanismo de invocacao).
-* `Localizacao`: Esconder onde o objeto esta localizado(exemplo URLm, vc nao sabe onde esta a pagina web)
-* `Relocalizacao`: imagine 2 servidores e voce vai acessar os servidores utilizando o celular. Os servidores tem processos, por exemplo Processo1, Processo2, Processo3. E voce usa o processo3 do servidor, e comeca a ter problema de lentidao, ai vc consegue clonar o processo3 em outro servidor e de forma transparente o acesso ao cliente muda para o servidor novo com o mesmo processo trazendo mais velocidade de desempenho.(Esconde que um objeto pode ser movido para outra localidade enquanto esta sendo utilizado). Quem define é o SD /= de migracao
-* `Migracao`: Esconder que um objeto pode ser movido para outra localidade. A diferenca entre Relocalizacao, é que aqui o cliente que define que o objeto deve ser migrado para outro local.
-* `Replicacao`: Esconder uqe um objeto esta sendo replicado
-* `Concorrencia`: Esconder que um objeto pode ser compartilhado entre diferentes usuarios independentes.
-* `Falhas`: Esconder falhas e a possivel recuperacao de um objeto.
+* **Acesso**: Varios nodes, entao nao pode acontecer por exemplo de um node ter uma arvore de inteiro, e o outro uma arvore de float(o usuario nao precisa saber das diferencas entre as representacoes de dados, deve ser transparente). E nao interessa ao usuario, nao deve saber tambem COMO e ONDE esta sendo chamado os outros nodes, pois precisa ser um sistema unico(mecanismo de invocacao).
+* **Localizacao**: Esconder onde o objeto esta localizado(exemplo URLm, vc nao sabe onde esta a pagina web)
+* **Relocalizacao**: imagine 2 servidores e voce vai acessar os servidores utilizando o celular. Os servidores tem processos, por exemplo Processo1, Processo2, Processo3. E voce usa o processo3 do servidor, e comeca a ter problema de lentidao, ai vc consegue clonar o processo3 em outro servidor e de forma transparente o acesso ao cliente muda para o servidor novo com o mesmo processo trazendo mais velocidade de desempenho.(Esconde que um objeto pode ser movido para outra localidade enquanto esta sendo utilizado). Quem define é o SD /= de migracao
+* **Migracao**: Esconder que um objeto pode ser movido para outra localidade. A diferenca entre Relocalizacao, é que aqui o cliente que define que o objeto deve ser migrado para outro local.
+* **Replicacao**: Esconder uqe um objeto esta sendo replicado
+* **Concorrencia**: Esconder que um objeto pode ser compartilhado entre diferentes usuarios independentes.
+* **Falhas**: Esconder falhas e a possivel recuperacao de um objeto.
 
 
 **Graus de transparencia**
@@ -130,27 +131,27 @@ Podemos que a transparencia na distribuicao é um bom objetivo, mas atingir é u
 Sistemas Distribuidos abertos sao capazes de interagir com outros sistemas abertos. Utilizando interfaces(possui o cabecalho somente, nao implementacao)
 
 **Caracteristicas**
-- devem respeitar interfaces bem definidas OK
-- devem permitir a portabilidade de aplicacoes OK
-- devem ser faceis de estender OK -> questoes de engenharia de software
-- devem ser facilmente interoperaveis `NAO é facil de fazer`, temos o como fazer dos anteriores esse nao necessariamente
+- devem respeitar `interfaces bem definidas` OK
+- devem permitir a `portabilidade` de aplicacoes OK
+- devem ser faceis de `estender` OK -> questoes de engenharia de software
+- devem ser facilmente `interoperaveis` `NAO é facil de fazer`, temos o como fazer dos anteriores esse nao necessariamente
 
 A abertuera dos sistemas distribuidos os tornam independentes de: hardware, plataformas, linguagens.
 
 #### Escalabilidade
 
-Obs: Muitos desenvolvedores de sistemas distribuídos modernos usam o adjetivo “escalável” sem deixar claro o porquê deles escalarem. 
+Obs: Muitos desenvolvedores de sistemas distribuídos modernos usam o adjetivo “escalável” sem deixar claro o `porquê` deles escalarem. 
 
 | Manter o desempenho mesmo que o aumento de requisicoes seja grande.
 
 1. **Tamanho, geografica, administrativa**
    
 Escalabilidade se refere a pelo menos três componentes:
-**a.** Número de usuários e/ou processos – **escalabilidade de tamanho**
-**b.** Distância máxima entre nós, as vezes nao depende somente do numero de usuarios mas de onde eles se localizam – **escalabilidade geográfica**
-**c.** Número de domínios administrativos, cada administrador tem suas politicas de acesso – **escalabilidade administrativa**
+**a.** Número de usuários e/ou processos – `escalabilidade de tamanho`
+**b.** Distância máxima entre nós, as vezes nao depende somente do numero de usuarios mas de onde eles se localizam – `escalabilidade geográfica`
+**c.** Número de domínios administrativos, cada administrador tem suas politicas de acesso – `escalabilidade administrativa`
 
-A maior parte dos servidores escalam apenas e ate certo ponto em tamanho, utilizando servidores poderosos (`scale-in`)
+`OBS`: A maior parte dos servidores escalam apenas e ate certo ponto em tamanho, utilizando servidores poderosos (**scale-in**).
 
 _Hoje em dia o maior desafio é conseguir a escalabilidade geografica e administrativa_
 
@@ -165,23 +166,23 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
 - Nao eh possivel assumir a existencia de um relogio global
 
   1. **Problemas na escalabilidade de tamanho**
-    escalabilidade de tamanho: Numero de usuarios e/ou processos 
+    `escalabilidade de tamanho`: Numero de usuarios e/ou processos 
 
     * Capacidade computacional, limitada pelas CPUs
     * Capacidade de armazenamento e de transferência entre CPU e HD
     * Capacidade de largura de banda entre o usuário e o serviço(transferencia de arquivo)
 
     Se aumenta o numero de usuarios e atinge a maxima de CPU, da mesma forma o HD pode atingir 100% de uso.
-    `Como estimar a capacidade?`
+    _Como estimar a capacidade?_
 
     **Back-of-the-Envelope estimation**
     Para estimar a capacidade e desempenho do sistema e entender quais serao os requisitos(vazao e armazenamento) a serem atendidos
 
-    `Exemplo do Twitter para estimar`
+    _Exemplo do Twitter para estimar_
 
 
   2. **Problemas na escalabilidade geografica**
-    escalabilidade geográfica: Distância máxima entre nós
+    `escalabilidade geográfica`: Distância máxima entre nós
 
   * Não é possível só ir da LAN para WAN: muitos dos sistemas distribuídos assumem interações cliente-servidor com latências pequenas. WAN: tempos sao longos
   * Links das WAN são pouco confiáveis: e.g.mover dados de streaming de vídeo da LAN para WAN falhará.
@@ -189,7 +190,7 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
 
 
   3. **Problemas na escalabilidade administrativa**
-   escalabilidade administrativa: Número de domínios administrativos
+   `escalabilidade administrativa`: Número de domínios administrativos
    * Políticas conflitantes a respeito do uso (e pagamento), gerenciamento e segurança.
    * Exemplos:
      * Compartilhamento de recursos caros entre diferentes domínios. -  Seguranca
@@ -200,8 +201,8 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
    Ideia geral: esconder latencia de comunicacao
 
    **a.** <u>Nao fique esperando por respostas, faça outra coisa</u>
-    - use comunicacao _assincrona_ -> nao confundir modelo assincrono
-    - use diferentes handlers para tratamento de mensagens(_multithread_)
+    - use `comunicacao assincrona` -> `nao confundir modelo assincrono`
+    - use diferentes handlers para tratamento de mensagens(`multithread`)
     - `Problema`: nem toda aplicacao se encaixa nesse modelo
 
     **b.** <u>Particionamento de dados e computação em muitas máquinas</u>
@@ -223,12 +224,12 @@ Por se tratar de um sistema descentralizado(SD), com nodes autonomos, acaba tend
 
 3. **Problemas Escalabilidade**
 Aplicar técnicas para obtenção de escalabilidade é fácil, exceto por:
-* Manter múltiplas cópias (em cache ou replicadas) leva a **inconsistências**: a modificação em uma cópia a torna diferente das demais durante um tempo
-* Manter as cópias consistentes requer* *sincronização global** em cada modificação (mas não há um relógio global)
+* Manter múltiplas cópias (em cache ou replicadas) leva a `inconsistências`: a modificação em uma cópia a torna diferente das demais durante um tempo
+* Manter as cópias consistentes requer* `sincronização global` em cada modificação (mas não há um relógio global)
 * Porem Sincronização global impossibilita soluções escaláveis
 
 
-Porem, se pudermos tolerar inconsistências, poderíamos reduzir a dependência de sincronização globais, mas _tolerar inconsistências é algo que depende da aplicação_.
+OBS: Porem, se pudermos tolerar inconsistências, poderíamos reduzir a dependência de sincronização globais, mas `tolerar inconsistências é algo que depende da aplicação`.
 
 #### Modelos de Sistema
 
@@ -251,7 +252,7 @@ Não confundir com comunicação síncrona e assíncrona entre cliente-servidor.
 
 
 #### Armadilhas no desenvolvimento de SDs
-Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa de “consertos” ao longo do tempo. Em geral, há muitas **hipóteses falsas**/nao presta atencao
+Muitos sistemas distribuídos se tornam desnecessariamente complexos por causa de “consertos” ao longo do tempo. Em geral, há muitas `hipóteses falsas`/nao presta atencao
 - A rede é confiável
 - A rede é segura
 - A rede é homogênea
@@ -276,7 +277,7 @@ O próximo passo: vários nós vindos de todos os cantos.
   * Heterogeneos: diferente hardware, diferente SO
   * Espalhados entre diversas organizacoes ou pessoas/lugares
   * Normalmente formam uma rede de longa distancia(wide-area network) - WAN
-  * Obs: Para permitir colaborações, grades normalmente usam _organizações virtuais_. Essencialmente, isso significa que os usuários (ou melhor, seus IDs) são organizados em grupos que possuem autorização para usar alguns recursos.
+  * Obs: Para permitir colaborações, grades normalmente usam `organizações virtuais`. Essencialmente, isso significa que os usuários (ou melhor, seus IDs) são organizados em grupos que possuem autorização para usar alguns recursos.
   ********[Imagem da arquitetura] - CAMADAS********
 
 **c.** Computacao em Nuvem
@@ -297,12 +298,12 @@ Faz uma distincao entre quatro camadas
 Uma quantidade enorme de sistemas em uso hoje em dia são formas de sistemas de informação tradicionais.
 Geralmente são aplicações que se conectam à rede para intercambiar informações.
 
-As palavras-chave que caracterizam os sistemas de informação distribuído são **transação** e **integração**. Sistemas transacionais que precisam ser integrados com outros nodes para compartilhar informacoes.
+As palavras-chave que caracterizam os sistemas de informação distribuído são `transação` e `integração`. Sistemas transacionais que precisam ser integrados com outros nodes para compartilhar informacoes.
 
-Nota: Transações formam uma <u>operação atômica</u>. Se cair em qualquer lugar: ABORT_TRANSACTION. Por exemplo venda casada hotel + passagem, se o hotel tem um banco de dados e passagem outro, e as informacoes nao tem integridade nas transacoes, ou seja nao batem, abortaria a transacao e retiraria de ambos os banco de dados.
+Nota: Transações formam uma `operação atômica`. Se cair em qualquer lugar: ABORT_TRANSACTION. Por exemplo venda casada hotel + passagem, se o hotel tem um banco de dados e passagem outro, e as informacoes nao tem integridade nas transacoes, ou seja nao batem, abortaria a transacao e retiraria de ambos os banco de dados.
 
 **Transações**
-Uma transação é um conjunto de operações sobre o estado de um objeto (banco de dados, composição de objetos, etc.) que satisfazem as seguintes propriedades (ACID):
+Uma transação é um conjunto de operações sobre o estado de um objeto (banco de dados, composição de objetos, etc.) que satisfazem as seguintes propriedades (`ACID`):
 - `Atomicidade` ou todas as operações são bem sucedidas, ou todas falham. Quando uma transação falha, o estado do objeto permanecerá inalterado. Depende do Framework ou sistema de gerenciamento do banco de dados.
 - `Consistência` uma transação estabelece um estado de transição válido. Isto não exclui a existência de estados intermediários inválidos durante sua execução. Transacoes entre bancos, enquanto ta enviando um dinheiro, esse dinheiro esta invalido, ate ser processada a transacao. Depende do programador.
 - `Isolamento` transações concorrentes não interferem entre si. Para uma transação T é como se as outrast ransações ocorressem ou antes de T, ou depois de T. Depende do Framework ou sistema de gerenciamento do banco de dados.
@@ -311,30 +312,33 @@ Uma transação é um conjunto de operações sobre o estado de um objeto (banco
 Tendo em vista isso como deveria ser feito o *ACID* em sistemas distribuidos?
 
 _Monitor de Processamento de Transações_
-Em muitos casos, o conjunto de dados envolvidos em uma transação está distribuído em vários servidores. Um `TP Monitor ` é responsável por _coordenar a execução de uma transação._
+Em muitos casos, o conjunto de dados envolvidos em uma transação está distribuído em vários servidores. Um `TP Monitor` é responsável por _coordenar a execução de uma transação._
 
 Imagine um cliente que quer usar um modelo transacional, uma transacao com varios outros servidores banco de dados. TP monitor, realmente monitora as requests.
 
 | Application -Request-> TP monitor -Manda o Request-> Servidores(DB)
+[IMAGEM]
 
 Esses servidores podem ser aplicacoes de diferentes empresas, por exemplop hotel e passagem
 
 **Integracao de aplicacoes corporativas:**
 Situacao: as organizacoes possuem diversas aplicacoes muitas delas sem interoperabilidade.
 
-A solucao basica para isso seria o monitor comentado acima, que combinaria as requisicoes das aplicacoes em um servidor, quem realizara o envio e coleta das respostas, apresentando um resultado coerente para o cliente.
+`A solucao basica` para isso seria o monitor comentado acima, que combinaria as requisicoes das aplicacoes em um servidor, quem realizara o envio e coleta das respostas, apresentando um resultado coerente para o cliente.
 
-Mas as vezes precisamos fazer comunicacao diretas, sem um intermediario -> **Enterprise Application Integration** == MIDDLEWARE de comunicacao. Permitindo nao somenta a comunicacao de um cliente com os servidores, mas cliente entre cliente atraves do middleware. Exemplo: RPC, MOM(Middleware orientado a mensagens)
+Mas as vezes precisamos fazer `comunicacao diretas`, e o TP MONITOR nao basta, sem um intermediario -> **Enterprise Application Integration** == MIDDLEWARE de comunicacao. Permitindo nao somenta a comunicacao de um cliente com os servidores, mas cliente entre cliente atraves do middleware. Exemplo: RPC, MOM(Middleware orientado a mensagens)
+[IMAGEM]
 
 <u>Como integrar as apps?</u>
 
 * Transferencia de arquivos: simples mas nao flexivel. Pode ter problema de consistencia, precisaria conhecer o formato do arquivo, propagacao e notificacoes de atualizacao.
 * Banco de dados: bem mais flexivel, porem requer que haja um schema comum com riscos de gargalo.
 * RPC: efetivo quando a execucao das acoes sao distribuidas, estando o requisitante e o requisitado online. Chamando o metodo diretamente, reutilizando o modelo de negocio.
+* `Proxy: componente que encaminha requisicoes ao servidor responsavel`
 ![RPC](imagens/RPC.png)
 
-App -> metodo soma no import -> proxy(objeto tem o metodo soma dentro, mas sem implementar - casca de soma) -> acessa o computador que realmente tem o soma.
-Sendo assim o cliente faz chamadas ao metodo como se estivesse sendo executado na maquina local, mas o metodo pode estar sendo executado em maquinas remotas.
+App -> metodo soma no import -> proxy(objeto tem o metodo soma dentro, mas sem implementar - casca de soma) -> acessa o computador que realmente tem o soma.  
+Sendo assim o cliente faz chamadas ao metodo como se estivesse sendo executado na maquina local, mas o metodo pode estar sendo executado em `maquinas remotas`.
 
 
 #### Sistemas Pervasivos
@@ -402,69 +406,75 @@ Um estilo é definido em termos de: componentes substituiveis com interfaces bem
 - Ideia basica: organize os componentes `logicamente diferentes` e os distribua entre as maquinas disponiveis. Cada camada com sua responsabilidade
 - Esse estilo é usado em sistemas cliente-servidor
 - Outro exemplo poderia ser camada de IU, camada de processamento, camada de dados. Nao existe uma comunicacao direta entre IU e DB, interface bem definida que mantem uma ordem e organizacao das camadas.
-
+[IMAGEM-EX1]
+[IMAGEM-EX2]
 
 2. **Arquiteturas baseadas em objetos**
 - Ideia basica: organize os compodentes `logicamente diferentes` e os distribua entre as maquinas disponiveis.
 - Estilo orientado a objetos usado em `sistemas de objetos distribuídos`.(Exemplo RMI)
-- **Encapsulamento**: Os objetos ficam distribuídos pelo sistema (servidores). Apesar do usuário fazer chamadas que são equivalentes a chamadas locais, elas podem estar sendo feitas em objetos remotos(em outras maquinas)-> por meio de _Proxy_ que tem as informacoes basicas e necessarias para comunicacao com outra maquina.
+- **Encapsulamento**: Os objetos ficam distribuídos pelo sistema (servidores). Apesar do usuário fazer chamadas que são equivalentes a chamadas locais, elas podem estar sendo feitas em `objetos remotos`(em outras maquinas)-> por meio de _Proxy_ que tem as informacoes basicas e necessarias para comunicacao com outra maquina.
 - Comunicacao entre objetos por meio de conectores e interfaces bem definidas
 - mais complexo que o de camadas que tem comunicacao unidirecional
-
+[IMAGEM-EX1]
+[IMAGEM-EX2]
 
 3. **Arquiteturas baseadas em eventos e dados**
 - Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico).
-- Publish/subscribe[desacoplado na referencia], subscribes precisam estar online
+- (a)Publish/subscribe[`desacoplado na referencia`](ANONIMOS), subscribes precisam estar online
 - Uso de event bus que nao depende de IP e porta, tem seus proprios identificadores unicos.
-- Espaço de dados compartilhados [desacoplado na ref. e tempo]
+- (b)Espaço de dados compartilhados [`desacoplado na ref(ANONIMOS). e tempo`(ASSINCRONOS)]
 
+[IMAGEM (a)]
+[IMAGEM (b)]
+[EXEMPLO b]
 
-1. **Arquiteturas centradas em recursos - daos compartilhados**
+4. **Arquiteturas centradas em recursos - dados compartilhados**
 Ideia basica: Desacoplar processos na referencia(anonimos, sem identificados especifico) e tempo(assincronos). Isso significa que a mensagem nao precisa que o subscribe esteja online, pois persiste o dado e aguarda no middleware ate que apareca alguem online.
 Vê um sistema distribuído como uma coleção de recursos gerenciados individualmente por componentes. Recursos podem ser adicionados, removidos recuperados e modificado por aplicações remotas - REST.
-- Recursos são identificados usando um único esquema de nomeação
-- Todos os serviços oferecem a mesma interface
-- Mensagens enviadas de ou para um serviço são auto-descritivas
-- Após a execução de uma operação em um serviço,o componente esquece tudo sobre quem chamou a operação
+- (1) Recursos são identificados usando um único esquema de nomeação
+- (2) Todos os serviços oferecem a mesma interface
+- (3) Mensagens enviadas de ou para um serviço são auto-descritivas
+- (4) Após a execução de uma operação em um serviço,o componente esquece tudo sobre quem chamou a operação
 - Operacoes basicas: PUT GET DELETE POST
 
-| Operacao | Descricao |
+| `Operacao` | `Descricao` |
 |---|---|
 | PUT | Cria um novo recurso |
 | GET | recupera o estado de um recurso usando um tipo de representacao |
 | DELETE | apaga um recurso |
 | POST | modifica um recurso ao transferir um novo estado |
 
-Exemplo: operacoes GET e PUT em um bucket S3
+Exemplo: operacoes GET e PUT em um bucket S3: `Objetos`(arquivos) sao armazenados em `buckets`(diretorios).
 
 #### Arquiteturas de Software
 
 1. Arquiteturas centralizadas
    **Caracteristicas modelo Cliente-Servidor**
-   - Existem processos que oferecem servicos (`Servidores`)
-   - Existem processos que usam esses servicos (`Clientes`)
+   - Existem processos que `oferecem servicos` (Servidores)
+   - Existem processos que `usam esses servicos` (Clientes)
    - Clientes e Servidores podem estar em maquinas diferentes
    - Clientes seguem um modelo de requisicao/resposta ao usar os servicos
+[imagem]
 
-2.  Arquiteturas multicamadas (multidivididas)
+2.  Arquiteturas multicamadas (`multidivididas`)
 Visao tradicional em 3 camadas `logicas`
-- A camada de apresentacao(user interface - UI) contem o necessario para a aplicacao poder interagir com o usuario
-- A camada de negocio(application) contem as funcoes de uma aplicacao
-- A camada de dados(database) contem os dados que o cliente quer manipular atraves dos componentes da aplicacao
+- A `camada de apresentacao(user interface - UI)` contem o necessario para a aplicacao poder interagir com o usuario
+- A `camada de negocio(application)` contem as funcoes de uma aplicacao
+- A `camada de dados(database)` contem os dados que o cliente quer manipular atraves dos componentes da aplicacao
 - Estas camadas são encontradas em muitos sistemas de informação distribuídos, que usam tecnologias de bancos de dados tradicionais e suas aplicações auxiliares.
 
 A configuracao mais tradicionar seria: 2 camadas fisicas(2 maquinas) + 3 logicas
-* uma camada física: configurações de terminal burro/mainframe 
-* duas camadas físicas: configuração cliente–servidor único.
-* três camadas físicas: cada camada em uma máquina separada
+* `uma camada física`: configurações de terminal burro/mainframe 
+* `duas camadas físicas`: configuração cliente–servidor único.
+* `três camadas físicas`: cada camada em uma máquina separada
 
 
 3. Arquiteturas descentralizadas
 - **P2P ESTRUTURADO**: os nós são organizados seguindo uma
 estrutura de dados distribuída específica - Amazon DynamoDB
-  - `ideia basica`: Organizar os nós em uma rede overlay estruturada, tal como um anel lógico, e fazer com que alguns nós se tornem responsáveis por alguns serviços baseado unicamente em seus Ids
+  - **ideia basica**: Organizar os nós em uma `rede overlay estruturada`, tal como um `anel lógico`, e fazer com que alguns nós se tornem responsáveis por alguns serviços baseado unicamente em seus Ids
   - Outra estrutura poderia ser nodes em um espaco d-dimensional e faca todos os nodes ficarem responsaveis por um dado em uma regiao especifica
-  - O sistema provê uma operação _LOOKUP(key)_ que irá fazer o roteamento de uma requisição até o nó correspondente usando as conexões lógicas.
+  - O sistema provê uma operação `LOOKUP(key)` que irá fazer o roteamento de uma requisição até o nó correspondente `usando as conexões lógicas`.
   - Node pode atuar tanto como cliente, quanto como servidor(chamado de peer)
   - ![LOOKUP](imagens/LOOKUP.png)
 
@@ -472,8 +482,8 @@ estrutura de dados distribuída específica - Amazon DynamoDB
 - **P2P NAO-ESTRUTURADO**: os nodes selecionam aleatoriamentes seus vizinhos - Skype
   - Muitos sistemas P2P não-estruturados tentam manter um `grafo aleatório`
   - Cada node deve contactar um outro node selecionado aleatoriamente:
-    - Cada participante mantem uma visao parcial da rede consistindo de c outros nodes(denominados vizinhos)
-    - Cada node P seleciona periodicamente um node Q de sua visao parcial [GOSSIP]
+    - Cada participante mantem uma `visao parcial` da rede consistindo de c outros nodes(denominados vizinhos)
+    - Cada node P seleciona periodicamente um node Q de sua visao parcial [`GOSSIP`]
     - P e Q trocam informacoes e participantes de suas respectivas visoes parciais [GOSSIP]
     - Serve pra quando quer disseminar uma informacao, pois nao tem como buscar uma informacao de forma deterministica, mas sim aleatoria
   
@@ -486,12 +496,16 @@ estrutura de dados distribuída específica - Amazon DynamoDB
     - Peers capazes de configurar conexoes
 
 
-1. Arquiteturas hibridas
+4. Arquiteturas hibridas
    
-- **P2P HIBRIDO**: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (edge-servers), utilizados com frequência como Content Delivery Networks (redes de distribuição de conteúdo).
-  - `Ideia basica`: Assim que um node indentifica de onde o arquivo sera baixado, ele se junta a uma swarm(multidao) de pessoas que, _em paralelo_, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
+- **P2P HIBRIDO**: alguns nós são designados, de forma organizada, para executar funções especiais - CloudFront, Stremio. Exemplo: Arquiteturas de servidores de borda (`edge-servers`), utilizados com frequência como `Content Delivery Networks` (redes de distribuição de conteúdo).
+  - _Ideia basica_: Assim que um node indentifica de onde o arquivo sera baixado, ele se junta a uma swarm(multidao) de pessoas que, _em paralelo_, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
+[IMAGEM CDN]
 
-| Praticamente todos os casos são exemplos de redes overlay: dados são roteados usando conexões definidas pelos nós
+- Exemplo: C-S com P2P - BitTorrent: Assim que um node identifica de onde o arquivo sera baixado, ele se junta a uma `swarm` de pessoas que, `em paralelo`, receberao pedacos do arquivo da fonte e redistribuirao esses pedacos entre os outros.
+[IMAGEM bITTORRENT]
+
+| Praticamente todos os casos de arquitetura de software são exemplos de `redes overlay`: dados são roteados usando conexões definidas pelos nós
 
 
 #### Arquiteturas x Middleware
@@ -500,26 +514,30 @@ estrutura de dados distribuída específica - Amazon DynamoDB
 
 Os middlewares são amplamente utilizados em arquiteturas de software distribuído e sistemas distribuídos, onde vários componentes, serviços ou aplicativos precisam trabalhar juntos para cumprir uma determinada função ou oferecer um serviço.
 
-Em muitos casos, arquiteturas/sistemas distribuídos são desenvolvidos de acordo com um estilo arquitetural específico. O estilo escolhido pode não ser o melhor em todos os casos ⇒ é necessário adaptar o comportamento da arquitetura usando um middleware (dinamicamente).
+Em muitos casos, arquiteturas/sistemas distribuídos são desenvolvidos de acordo com um estilo arquitetural específico. O estilo escolhido pode não ser o melhor em todos os casos ⇒ é necessário `adaptar o comportamento da arquitetura usando um middleware (dinamicamente)`.
 
 Dentro do middleware termos os Interceptors:
 
 **Interceptors**
-Interceptam o fluxo de controle normal quando um objeto remoto for invocado. 
+Interceptam o fluxo de controle normal quando um `objeto remoto` for invocado. 
 
 App Cliente -Request method-> Object middleware -Request-> SO -Request-> Another machine
 Ou seja nesse caso o middleware nao faz nada, mas poderia usar interceptors que vao modificar o comportamento adicionando por exemplo replicacao, seguranca. O interceptor _pode estar entre o cliente e o middleware, e tambem entre o middleware e o SO._
 
+[imagem interceptors]
+
 #### Sistemas Distribuídos autogerenciáveis
 
-Sistemas e arquiteturas de software que consideram a **adaptacao automatica** do seu comportamento. Sistemas muito grandes, com muitos nodes. Impossivel intervencao humana de maneira eficiente, precisa de algo automatizado.
+Sistemas e arquiteturas de software que consideram a `adaptacao automatica` do seu comportamento. Sistemas muito grandes, com muitos nodes. Impossivel intervencao humana de maneira eficiente, precisa de algo automatizado.
 - Autoconfiguração
 - Autogerenciamento
 - Autocura
 - Auto-otimização
 
 *Modelo de regulacao por feedback*
-Em muitos casos, sistemas auto-* são organizados como um sistema de regulação por feedback. Precisa de metricas para ajustar.
+Em muitos casos, sistemas auto-* são organizados como um `sistema de regulação por feedback`. Precisa de metricas para ajustar.
+
+[iMAGEM]
 
 Por exemplo sistema com uma configuracao inicial, que passa para o sistema distribuido. Esse sistema tem uns ruidos incontrolaveis, e esse comportamento observado serve como metrica para estimar e analisar pelo proprio sistema.
 Com isso tem-se estrategias dependendo do funcionamento.
