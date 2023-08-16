@@ -22,45 +22,48 @@
 
 
 ### Introducao a processos e threads
-**Processo**: uma das abstracoes mais importantes de um SO; 
+**Processo**: uma das `abstracoes mais importantes de um SO`; 
 - representam a execucao de um programa; 
 - composto por: IP, codigo, heap, stack, files, interrupt routines.
 - execucoes simultaneas de um programa sao representadas por diversos processos
 - por seguranca: os `espacos de memoria` de cada processo sao `isolados` -> evitando problemas que seriam causados por ataques deliberados ou por bugs
-- Cada processo é uma linha de execucao independente gerenciada pelo SO
+- Cada processo é uma `linha de execucao independente` escalonada/gerenciada pelo SO
 
-**Threads**: frequentemente um mesmo processo precisa fazer mais de uma coisa por vez. Exemplo: navegador de Internet
-- da mesma maneira que processo fornecem multiplas linhas de execucao em uma maquina, threads permitem _multiplas linhas de execucao em um só processo_.
-- Como todas as threads estao no mesmo processo, todas tem acesso ao mesmo espaco de memoria e a todos os recursos disponiveis no processo.
+**Threads**: frequentemente um mesmo processo precisa fazer `mais de uma coisa por vez`. Exemplo: navegador de Internet
+- da mesma maneira que processo fornecem multiplas linhas de execucao em uma maquina, threads permitem `multiplas linhas de execucao em um só processo`.
+- Como todas as threads estao no mesmo processo, `todas tem acesso ao mesmo espaco de memoria` e a todos os recursos disponiveis no processo.
 
 #### Processos x Threads
 * SO prove mecanismos para dividir o tempo do processador entre processos e threads, gerenciando-os nas unidades de processamento disponiveis. Bloqueios por alguma operacao de E/S causam uma troca do processo/thread pelo proximo da fila
-* Trocas de contexto entre threads sao baratas; basta trocar o IP e mais alguns registradores
-* Trocas de contexto entre processos sao mais caras; pois exigem troca da tabela de paginas, troca de IP, troca de rotinas de manuseio de interrupcoes.
+* `Trocas de contexto entre threads sao baratas`; basta trocar o IP e mais alguns registradores
+* `Trocas de contexto entre processos sao mais caras`; pois exigem troca da tabela de paginas, troca de IP, troca de rotinas de manuseio de interrupcoes.
 
-| pode surgir a duvida, usar um processo muitas threads, varios processos com muitas threads, um processo com uma thread? Tudo depende mas ainda assim ha momentos que o suso de processos pode ser preferivel por mais caro que seja, por questao de seguranca.
+| pode surgir a duvida, usar um processo muitas threads, varios processos com muitas threads, um processo com uma thread? Tudo depende mas ainda assim ha momentos que o suso de processos pode ser preferivel por mais caro que seja, por questao de `seguranca`.  
+
+[IMAGEM VERSAO MENOS SIMPLIFICADA]
 
 ### Threads em sistemas distribuidos
 
 Razoes para utilizar varias threads:
 - Evita bloqueios: para programas com uma thread caso haja uma chamada a IO, o SO bloqueia a thread.
-- Explora o paralelismo: em um programa multi-thread, podem ser executadas em paralelo em diversos processadores ou cores.
-- Evita troca de contextos entre processos: leva a programacao concorrente com memoria compartilhada(feita pelo programador)
+- Explora o `paralelismo`: em um programa multi-thread, podem ser executadas em paralelo em diversos processadores ou cores.
+- Evita troca de contextos entre processos: `leva a programacao concorrente com memoria compartilhada`(feita pelo programador)
 
 #### Threads no Cliente
 **Clientes web multithreaded - escondem latencia da rede:**
-- Navegador analisa a pagina HTML sendo recebida e descobre que muitos outros arquivos devem ser baixados. Cada arquivo é baixado por uma thread separada; cada uma realiza um requisicao HTTP(bloqueante). A medida que os arquivos chegam, o navegador os exibem
+- Navegador analisa a pagina HTML sendo recebida e descobre que _muitos outros arquivos devem ser baixados_. Cada arquivo é baixado por uma thread separada; cada uma realiza um requisicao HTTP(bloqueante). A medida que os arquivos chegam, o navegador os exibem
 
 **Multiplas chamadas requisicao-resposa(RPC) para outras maquinas**
 - Um cliente faz varias chamadas simultaneas, cada uma em uma thread diferente
 - Ele espera ate que todos os resultados tenham chegado
-- Se as chamadas sao servidores diferentes, voce pode ter um speed-up linear
+- Se as chamadas sao servidores diferentes, voce pode ter um `speed-up linear`
+> `speed-up linear`: No contexto de chamadas de procedimento remoto (RPC) em que múltiplas chamadas são feitas a servidores diferentes, um "speed up linear" significaria que, à medida que mais servidores são envolvidos nas chamadas, o tempo total necessário para concluir todas as chamadas diminui proporcionalmente.
 
 #### Threads no Servidor(dispatcher/worker)
 **Melhorias no desempenho**
 - Iniciar uma thread é muito mais barato do que iniciar um novo processo
 - Ter servidores single-threaded impede o uso de sistemas que possuem varios processadores(multi-core), nao tem problema de concorrencia
-- Da mesma maneira que comentamos no cliente: esconda a latencia de rede reagindo a proxima requisicao enquanto a anterior esta enviando sua resposta.
+- Da mesma maneira que comentamos no cliente: `esconda a latencia de rede` reagindo a proxima requisicao enquanto a anterior esta enviando sua resposta.
 
 **Melhorias na estrutura**
 - a maioria dos servidores faz muita E/S. Usar chamadas bloqueantes simples e bem conhecidas simplifica o programa.
@@ -69,11 +72,14 @@ Razoes para utilizar varias threads:
 **Modelo dispatcher/worker**
 Para tratar melhor usamos esse modelo.
 Basicamente dentro de um processo no servidor, o cliente acessa o programa por meio de uma thread que somente escuta, e somente executa a requisicao em uma outra thread. Ou seja a thread que escuta é o `dispatcher` e as demais que executam a requisicao sao os `workers`.
+Complemento Funcionamento dispatcher/worker: Esse modelo é particularmente útil quando você tem um grande número de tarefas a serem processadas e deseja evitar o custo de criar e destruir threads a cada nova tarefa. Ele também ajuda a gerenciar a concorrência, já que o despachante controla a distribuição das tarefas e evita que os operários colidam ao acessar a fila.
+No seu caso, com três operários, isso significa que até três tarefas podem ser executadas simultaneamente. Se mais tarefas chegarem enquanto os operários já estão ocupados, elas serão enfileiradas e esperarão até que um operário esteja disponível para processá-las.
 
 ### Clientes
 
 #### Clientes: interacao com o servidor
-Cliente se comunica com o servidor, mas tambem pode atuar como o servidor. Usando protocolos de aplicacao ou de middleware
+Cliente se comunica com o servidor, mas tambem pode atuar como o servidor. 
+- Usando protocolos de aplicacao ou de middleware
 - A maior parte dos softwares do lado do cliente é especializada em interfaces graficas de usuario
 - O lado do servidor processa e armazena eventos
 
@@ -83,7 +89,7 @@ lembrando que o cliente nao quer saber onde esta localizado o servico
 - `transparencia de acesso`: stubs do cliente para RPC(SOMENTE CABECALHO DO METODO)
 - `transparencia de localizacao/migracao`: deixe o software cliente manter o controle sobre a localizacao atual
 - `transparencia de replicacao`: multiplas evocacoes sao gerenciadas pelo stub do cliente, sem o uso do middleware, atuando como um middleware de replicacao. Nao tao simples de fazer
-- `transparencia de falhas`: podem geralmente ser responsabilidade so do cliente(que tenta esconder falhas de comunicacao e do servidor)
+- `transparencia de falhas`: podem geralmente ser responsabilidade só do cliente(que tenta esconder falhas de comunicacao e do servidor)
 
 
 ### Servidores
@@ -95,21 +101,20 @@ Modelo basico: um processo que implementa um servico especifico em nome de uma c
 
 **Servidores iterativos**: O servidor trata uma requisicao antes de atender a proxima. Por exemplo 3 clientes acessando o mesmo servidor, requisicoes colocadas em uma fila para tratar uma por uma.
 
+**Servidores concorrentes**: usa um `dispatcher`, que pega uma requisicao e passa o seu tratamento para uma `thread`/processo separado
 
-**Servidores concorrentes**: usa um dispatcher, que pega uma requisicao e passa o seu tratamento para uma thread/processo separado
-
-> É mais comum encontrarmos **servidores concorrentes**: eles podem tratar multiplas requisicoes mais facilmente, principalmente se for necessario realizar operacoes bloqueantes em discos ou outros servidores
+> É mais comum encontrarmos **servidores concorrentes**: eles podem tratar `multiplas requisicoes` mais facilmente, principalmente se for necessario realizar operacoes bloqueantes em discos ou outros servidores
 
 Alguns processos bem definidos em portas. por exemplo ssh porta 22
-Cada requisicao a uma porta é atribuida a um processo dinamicamente via superservidor(processo que inicia subprocesso para tratar a requisicao) ou daemos(processos que se registram em uma porta)
+Cada requisicao a uma porta é atribuida a um processo dinamicamente via superservidor(processo que inicia subprocesso para tratar a requisicao) ou `daemos`(processos que se registram em uma porta)
 
--> Assinando dinamemicamente, para acessar o ser vico no servidor:
+-> Assinando dinamemicamente, para acessar o servico no servidor:
 
 Cada requisicao a uma porta é atribuida a um processo dinamicamente, via **Daemons**(processos que se registram em uma porta).
 Exemplo: cliente quer acessar o servico1 no servidor, servidor registra a porta 8000 de acesso, ai o daemon vai registrar que na porta 8000 vai estar o servico1. Isso somente na primeira vez, pq ai todas as proximas vezes que o cliente acessar o servico1 ja vai ter a porta pra requisitar diretamente.
 
 **Superservidor**
-É diferente do daemon, que no daemon o server precisa estar disponivel antes de qualquer requisicao para registrar. Aqui o servico é levantado de forma dinamica. Porem para levantar pode levar um tempo
+É diferente do daemon, que no daemon o server precisa estar disponivel antes de qualquer requisicao para registrar. Aqui o servico é levantado de forma dinamica. Porem para levantar pode levar um tempo.
 
 #### Stateless e stateful
 
@@ -121,8 +126,9 @@ Exemplo: pagina inicial sem logar no facebook, somente mostra informacoes generi
 - Nao rastreia os seus clientes: por exemplo quantas vezes acessou
 - _Consequencias_
   - Clientes e servidores sao completamente independentes(evita coordenacao)
-  - Inconsistencias de estado devido a problemas no cliente ou servidor sao reduzidas
-  - Possivel perda de desempenho. Um servidor nao pode antecipar o comportamento, por nao ter o estado do cliente, por exemplo pode ter que fazer algo frequente do zero varias vezes.
+  - `Inconsistencias de estado` devido a problemas no cliente ou servidor sao reduzidas
+  - Possivel `perda de desempenho`. Um servidor nao pode antecipar o comportamento, por nao ter o estado do cliente(p.e `prefetching`), por exemplo pode ter que fazer algo frequente do zero varias vezes.
+- o objetivo do prefetching é minimizar a latência de acesso aos dados, aproveitando o conhecimento prévio sobre padrões de acesso ou relações entre dados
 
 O uso de comunicacao orientada a conexao viola o modelo stateless?
 Comunicacao TCP entre cliente e Servidor viola? TCP mantem estado na camada de transporte.
@@ -132,24 +138,27 @@ Resposta: Nao viola, pois ha uma separacao de responsabilidade. Stateless nao ma
 Servidores guaradm o status de seus clientes. Por exemplo home apos logar no facebook. Informacoes dos seus amigos, e suas informacoes.
 - Regristam quando um arquivo foi aberto para realizacao de prefetching. Por exemplo se um arquivo é muito acessado, ao inves de abrir e fechar toda vez que requisitado, poderia deixar aberto economizando tempo.
 - Sabem quando o cliente possui cache dos dados e permitem que os clientes mantenham copias locais de dados compartilhados.
-- Desempenho de servidores stateful pode ser extremamente alto, desde que seja permitido que os cleintes mantenham copias locais dos dados. -> Nesse caso, confiabilidade nao é o maior problema e sim a consistencia. Porque poderia ter um cliente que modifica uma informacao, e o dado fique defasado.
+- `Desempenho de servidores stateful pode ser extremamente alto`, desde que seja permitido que os cleintes mantenham copias locais dos dados. -> Nesse caso, `confiabilidade nao é o maior problema e sim a inconsistencia`. Porque poderia ter um cliente que modifica uma informacao, e o dado fique defasado.
 
 #### Aglomerados de servidores: 3 camadas diferentes
 Como colocar tudo isso em varias maquinas? com os conceitos anteriores
 
 Varios clientes, mas vamos focar em um cliente que faz acesso a 1 ou mais maquinas na primeira camada fisica(**first tier**)(podem ser os loadbalancers e o apache) que realizam o dispatcher da requisicao para as maquinas da **second tier**(servidor com um processo que pode executar uma ou mais threads) que podem precisar acessar a *third tier* que seria o banco de dados.
+
 ![tiersServers](imagens/tiersServers.png)
+- primeira camada `frontend` é responsavel por interagir com clientes e repassar requisicoes para um servidor apropriado `backend`
+- O logical switch pode ser um proxy, ou dispatcher(componente intermediario que encaminha reqs) conhecido como `load balancer`. Que podem utilizar dicersas estrategias(round-robin, ociosidade, sessao,etc para encaminhar a req ao servidor adequando
 
 *Tratamento de Requisicoes*
-> Ter uma unica camada tratando toda a comunicacao de/para o aglomerado pode levar a criacao de um *gargalo*. Isso acontece porque volta pelo mesmo dispacher ate o cliente novamente   
+> O frontend(switch) fica sobrecarregado facilmente. Ter uma unica camada tratando toda a comunicacao de/para o aglomerado pode levar a criacao de um *gargalo*. Isso acontece porque volta pelo mesmo dispacher ate o cliente novamente. Precisamos pensar em algumas solucoes   
 
 **Solucao 1**
-- seria usar o *TCP-handoff*: cliente manda requisicao para o dispachter que requisita o servidor mas nesse caso o servidor responde direto para o cliente, sem passar pelo dispatcher novamente. liberando o dispatcher. Mas o cliente espera uma resposta do dispatcher, e para isso o servidor para responder diretamente precisaria modificar o endereco para responder como se fosse o dispatcher, sendo assim fica de maneira transparente o acesso, como se fosse um sistema unico e coerente. Handoff nada mais é que deixar conexoes diferentes como se fosse a mesma conexao TCP para a transparencia de comunicacao com o cliente.
+- seria usar o *TCP-handoff*: cliente manda requisicao para o dispachter que requisita o servidor mas nesse caso o servidor responde direto para o cliente, sem passar pelo dispatcher novamente. liberando o dispatcher. Mas o cliente espera uma resposta do dispatcher, e para isso o servidor para responder diretamente precisaria modificar o endereco para responder como se fosse o dispatcher, sendo assim fica de maneira transparente o acesso, como se fosse um sistema unico e coerente. `Handoff nada mais é que deixar conexoes diferentes como se fosse a mesma conexao TCP para a transparencia de comunicacao com o cliente.`
 
 **Solucao 2**
 - O `switch` da camada de transporte: frontend simplesmente redireciona a mensagem a um dos servidores(considerando metricas de desempenho). 
 - `Distribuicao`: frontend seleciona o melhor servidor de acordo com conteudo da mensagem recebida. Servidor tem um pedaco de codigo _distributor_      
-Funcionamento: Cliente manda uma requisicao de setup para o switch, que usa politica simples e manda para o middleware no servidor - distributor - que manda para o dispatcher, que ira analisar em qual servidor realmente deve ser direcionada a requisicao para o servidor mais adequado, por meio do uso do handoff tbm. e volta com a resposta para o switch que retorna para o servidor, ou seja tudo isso meio que cria o caminho usando um setup request, para quando for a real requisicao ja tenha as conexoes criadas para executar.
+Funcionamento: Cliente manda uma requisicao de setup para o switch, que usa politica simples e manda para o middleware no servidor - distributor - que manda para o dispatcher, que ira analisar em qual servidor realmente deve ser direcionada a requisicao para o servidor mais adequado, por meio do uso do `TCP handoff` tbm. e volta com a resposta para o switch que retorna para o servidor, ou seja tudo isso meio que cria o caminho usando um setup request, para quando for a real requisicao ja tenha as conexoes criadas para executar.
 ![Solucao2Dispatcher](imagens/Solucao2Dispatcher.png)
 
 ### Migracao de codigo
@@ -169,9 +178,9 @@ Por que migrar?
 #### Migracao em sistemas heterogeneos
 Problema principal
 - A maquina destino nao pode ser adequada para executar o codigo migrado
-- A definicao de contexto/processo/processador é _altamente dependente do hardware, SO e libs locais_     
+- A definicao de contexto/processo/processador é `altamente dependente do hardware, SO e libs locais`     
 De alguma forma precisaria mudar tudo para conseguir rodar o codigo, e pode ser que sejam maquinas com SO diferentes. 
-Nesse caso a unica solucao seria usar uma maquina abstrata que é implementada nas diferentes plataformas **MAQUINAS VIRTUAIS**
+Nesse caso a unica solucao seria usar uma `maquina abstrata` que é implementada nas diferentes plataformas **MAQUINAS VIRTUAIS**
 
 > **Virtualizacao** de uma maquina que mais se adeque ao contexto necessario, e essa maquina virtual pode ser migrada para qualquer maquina que seja adequada
 
