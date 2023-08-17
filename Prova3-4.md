@@ -1,6 +1,6 @@
 # Sistemas Distribuidos
 
-## Capitulo 3
+## Capitulo 3 - PROCESSOS
 
 ### Conceitos
 * [Introducao a processos e threads]()
@@ -18,7 +18,6 @@
   * [Load Balancer]()
 * [Migracao de codigo]()
   * [Virtualizacao]()
-* [Frontend e Backend]()
 
 
 ### Introducao a processos e threads
